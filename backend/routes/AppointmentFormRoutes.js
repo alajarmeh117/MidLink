@@ -1,48 +1,46 @@
-
-// // admin-appointmentRoutes.js
-// const express = require('express');
-// const router = express.Router();
-// const appointmentController = require('../controller/AppointmentFormController');
-
-// // Apply authentication middleware to all routes
-// router.use(appointmentController.authenticateToken);
-
-// router.get('/doctors/:doctorId/available-slots', appointmentController.getAvailableSlots);
-// router.post('/appointments', appointmentController.bookAppointment);
-
-// module.exports = router;
-
-
 const express = require("express");
 const router = express.Router();
 const appointmentController = require("../controller/AppointmentFormController");
 const {
   getDoctorByAppointmentId,
+  getDoctorRating,
 } = require("../controller/AppointmentFormController");
 
-// Routes that require authentication
 router.get(
   "/doctors/:doctorId/available-slots",
   appointmentController.authenticateToken,
-  appointmentController.getAvailableSlots
+  appointmentController.getAvailableSlots,
 );
 router.post(
   "/appointments",
   appointmentController.authenticateToken,
-  appointmentController.bookAppointment
+  appointmentController.bookAppointment,
 );
 router.post(
   "/submit-review",
   appointmentController.authenticateToken,
-  appointmentController.submitReview
+  appointmentController.submitReview,
+);
+router.put(
+  "/appointments/:appointmentId/cancel",
+  appointmentController.authenticateToken,
+  appointmentController.cancelAppointment,
 );
 router.get(
   "/unreviewed-appointments",
   appointmentController.authenticateToken,
-  appointmentController.getUnreviewedAppointments
+  appointmentController.getUnreviewedAppointments,
 );
 
-// Route that doesn't require authentication
+// --- المسار الجديد لقائمة الانتظار ---
+router.post(
+  "/doctors/:doctorId/waiting-list",
+  appointmentController.authenticateToken,
+  appointmentController.joinWaitingList,
+);
+
+// routes بدون authentication
 router.get("/doctor/:id", getDoctorByAppointmentId);
+router.get("/doctor/:doctorId/rating", getDoctorRating);
 
 module.exports = router;

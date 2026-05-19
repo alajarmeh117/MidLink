@@ -1,43 +1,43 @@
-
-
 // App.js
-import React from 'react';
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import AboutUsPage from './pages/AboutUs';
-import ContactUsPage from './pages/ContactUsPage';
-import OurDoctorPage from './pages/OurDoctorPage';
-import HealthcareDashboard from './pages/ProfileHistoryPage';
-import ProfileEditPage from './pages/ProfileEditPage';
-import Dashboard from './pages/DoctorPages/Dashboard';
-import DoctorProfileEditPage from './pages/DoctorPages/DoctorProfileEditPage';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import VideoCall from "./pages/VideoCall"; // استيراد صفحة مكالمة الفيديو
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import AboutUsPage from "./pages/AboutUs";
+import ContactUsPage from "./pages/ContactUsPage";
+import OurDoctorPage from "./pages/OurDoctorPage";
+import HealthcareDashboard from "./pages/ProfileHistoryPage";
+import ProfileEditPage from "./pages/ProfileEditPage";
+import Dashboard from "./pages/DoctorPages/Dashboard";
+import DoctorProfileEditPage from "./pages/DoctorPages/DoctorProfileEditPage";
 // import AdminDashboard from './pages/AdminPages/AdminHome';
 // import OverviewPage from './pages/AdminPages/AddDoctor';
 // import Sidebar from './pages/AdminPages/sidebar';
-import AdminHome from './pages/AdminPages/AdminHome';
-import AddDoctor from './pages/AdminPages/AddDoctor';
-import StaffManagementPage from './pages/AdminPages/StaffManagementPage';
-import AddPatient from './pages/AdminPages/AddPatient';
-import PatientRecordsPage from './pages/AdminPages/PatientRecordsPage';
-import FeedbackPage from './pages/AdminPages/FeedbackPage';
-import SchedulesPage from './pages/AdminPages/SchedulesPage';
-import AdminLogin from './pages/AdminPages/Login';
-import DoctorProfilePage from './pages/DoctorDetailsPage';
-import Appointment from './pages/AdminPages/AdminAppointmentPatient';
-import MyPrescriptionPage from './pages/MyPrescriptionPage';
-import AdminPrescription from './pages/AdminPages/AdminPrescription';
-import DoctorLayout from './pages/DoctorPages/DoctorLayout';
-import DoctorScheduling from './pages/DoctorPages/DoctorScheduling';
-import PatientRecords from './pages/DoctorPages/PatientRecords';
+import AdminHome from "./pages/AdminPages/AdminHome";
+import AddDoctor from "./pages/AdminPages/AddDoctor";
+import StaffManagementPage from "./pages/AdminPages/StaffManagementPage";
+import AddPatient from "./pages/AdminPages/AddPatient";
+import PatientRecordsPage from "./pages/AdminPages/PatientRecordsPage";
+import FeedbackPage from "./pages/AdminPages/FeedbackPage";
+import SchedulesPage from "./pages/AdminPages/SchedulesPage";
+import AdminLogin from "./pages/AdminPages/Login";
+import DoctorProfilePage from "./pages/DoctorDetailsPage";
+import Appointment from "./pages/AdminPages/AdminAppointmentPatient";
+import MyPrescriptionPage from "./pages/MyPrescriptionPage";
+import AdminPrescription from "./pages/AdminPages/AdminPrescription";
+import DoctorLayout from "./pages/DoctorPages/DoctorLayout";
+import DoctorScheduling from "./pages/DoctorPages/DoctorScheduling";
+import PatientRecords from "./pages/DoctorPages/PatientRecords";
 import AdminFeedback from "./pages/AdminPages/AdminFeedback";
 import Feedback from "./pages/Feedback";
+import ResetPassword from "./pages/resetPassword/ResetPassword";
+import ForgotPassword from "./pages/resetPassword/ForgotPassword";
 ///
 import PaymentPage from "./pages/PayPalPayment";
 import PayPalCheckoutButton from "./pages/PayPalPayment";
@@ -53,6 +53,8 @@ function App() {
         }}
       >
         <Routes>
+          <Route path="/video-call/:roomId" element={<VideoCall />} />{" "}
+          {/* مسار مكالمة الفيديو مع رقم الغرفة كمعامل */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
@@ -67,6 +69,11 @@ function App() {
           <Route path="/AdminDashboard/Feedback" element={<AdminFeedback />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/paypal" element={<PayPalCheckoutButton />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/reset-password/:id/:token"
+            element={<ResetPassword />}
+          />
           {/* Doctor dashboard */}
           {/* 
         <Route path="/home" element={<Dashboard />} />

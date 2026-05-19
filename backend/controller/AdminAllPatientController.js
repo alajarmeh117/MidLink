@@ -8,8 +8,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: 'abedalmajedalajarmah@gmail.com',
-    pass: 'ndgx zdev lywb gohb'
+    user: 'midlink81@gmail.com',
+    pass: 'nqjz gdaz ylfo dvtj'
   },
 });
 
@@ -49,7 +49,7 @@ exports.updateApprovalStatus = async (req, res) => {
       
       // Send email
       const mailOptions = {
-        from: 'abedalmajedalajarmah@gmail.com',
+        from: 'midlink81@gmail.com',
         to: patient.email,
         subject: 'Account Approval Status Update',
         text: isApproved 

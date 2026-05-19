@@ -61,10 +61,6 @@ CREATE TABLE appointments (
 
 
 
-
-
-
-
 CREATE TABLE healthcare_records (
     record_id SERIAL PRIMARY KEY,  
     id BIGINT NOT NULL, 
@@ -80,7 +76,6 @@ CREATE TABLE healthcare_records (
     FOREIGN KEY (id) REFERENCES patients(id),
     FOREIGN KEY (staff_id) REFERENCES medical_staff(staff_id)
 );
-
 
 
 
@@ -144,8 +139,6 @@ CREATE TABLE reviews(
     FOREIGN KEY(patient_id) REFERENCES patients(id),
     FOREIGN KEY(staff_id) REFERENCES medical_staff(staff_id)
 );
-
-
 
 
 

@@ -101,7 +101,7 @@ const UnreviewedAppointments = () => {
               }`}
             >
               <div className="bg-[#e6f0f5] rounded-lg p-6 shadow-sm">
-                <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+                <div  className="flex flex-col md:flex-row justify-between items-center mb-4">
                   <div className="space-y-2 mb-4 md:mb-0">
                     <div className="flex items-center text-lg text-[#05464e]">
                       <Calendar className="w-5 h-5 mr-2 text-[#05464e]" />

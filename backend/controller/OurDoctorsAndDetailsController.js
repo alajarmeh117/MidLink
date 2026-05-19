@@ -55,8 +55,8 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true,
     auth: {
-      user: 'abedalmajedalajarmah@gmail.com',
-      pass: 'ndgx zdev lywb gohb'
+      user: 'midlink81@gmail.com',
+    pass: 'nqjz gdaz ylfo dvtj'
     },
   });
   
@@ -75,7 +75,7 @@ const transporter = nodemailer.createTransport({
   
       // Send email
       const mailOptions = {
-        from: 'abedalmajedalajarmah@gmail.com',
+        from: 'midlink81@gmail.com',
         to: doctorEmail,
         subject: 'New message from a patient',
         text: message,

@@ -1,169 +1,6 @@
-// // HeroSection.jsx
-// import React from 'react';
-
-// const HeroSection = () => {
-//   return (
-//     <section className="relative bg-gray-800 text-white">
-//       <div className="absolute inset-0">
-//         <img
-//           src="https://via.placeholder.com/1920x800"
-//           alt="Hero Background"
-//           className="w-full h-full object-cover opacity-60"
-//         />
-//         <div className="absolute inset-0 bg-black opacity-50"></div>
-//       </div>
-//       <div className="relative container mx-auto px-4 py-20 flex flex-col items-center justify-center text-center">
-//         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-//           Welcome to Our Website
-//         </h1>
-//         <p className="text-lg md:text-2xl mb-8">
-//           We provide exceptional care and services tailored to your needs.
-//         </p>
-//         <a
-//           href="/contact"
-//           className="bg-blue-500 text-white py-2 px-6 rounded-lg text-lg font-semibold hover:bg-blue-600 transition duration-300"
-//         >
-//           Get Started
-//         </a>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default HeroSection;
-
-
-// import React from "react";
-// import { motion } from "framer-motion";
-
-// // Hero Section Component
-// const HeroSection = () => {
-//   return (
-//     <motion.section
-//       initial={{ opacity: 0 }}
-//       animate={{ opacity: 1 }}
-//       transition={{ duration: 1 }}
-//       className="relative h-dvh flex items-center justify-center overflow-hidden"
-//     >
-//       <div className="absolute inset-0 z-0">
-//         <img
-//           src="https://i.imgur.com/IQkSnBK.png"
-//           className="w-full h-96 object"
-//         />
-//       </div>
-//       <div className="relative z-10 text-center text-white">
-//         <motion.h1
-//           initial={{ y: -50, opacity: 0 }}
-//           animate={{ y: 0, opacity: 1 }}
-//           transition={{ delay: 0.5, duration: 0.8 }}
-//           className="text-5xl font-bold mb-4"
-//         >
-//           Book Your Medical Appointment
-//         </motion.h1>
-//         <motion.p
-//           initial={{ y: 50, opacity: 0 }}
-//           animate={{ y: 0, opacity: 1 }}
-//           transition={{ delay: 0.7, duration: 0.8 }}
-//           className="text-xl mb-8"
-//         >
-//           Quick, easy, and convenient scheduling with top doctors
-//         </motion.p>
-//         <motion.button
-//           whileHover={{ scale: 1.05 }}
-//           whileTap={{ scale: 0.95 }}
-//           className="bg-[#05464e] text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-[#05464e]/90 transition duration-300"
-//         >
-//           Get Started
-//         </motion.button>
-//       </div>
-//     </motion.section>
-//   );
-// };
-// export default HeroSection;
-
-// import React from "react";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
-// import { motion } from "framer-motion";
-
-// Import Swiper styles
-// import "swiper/css";
-// import "swiper/css/navigation";
-// import "swiper/css/pagination";
-// import "swiper/css/effect-fade";
-// import { Link } from "react-router-dom";
-
-// const HeroSection = () => {
-//   const images = [
-//     "https://i.imgur.com/DWvfGPl.png",
-//     "https://i.imgur.com/IQkSnBK.png",
-//     "https://i.imgur.com/4onXGUw.png",
-//     "https://i.imgur.com/u8JxI67.png",
-//     "https://i.imgur.com/wlvgquI.png",
-//   ];
-
-//   return (
-//     <section className="relative h-svh overflow-hidden font-serif">
-//       <Swiper
-//         modules={[Navigation, Pagination, Autoplay, EffectFade]}
-//         navigation
-//         pagination={{ clickable: true }}
-//         autoplay={{ delay: 2000, disableOnInteraction: false }}
-//         effect="fade"
-//         loop
-//         className="h-full w-full"
-//       >
-//         {images.map((img, index) => (
-//           <SwiperSlide key={index}>
-//             <div className="relative h-full w-full">
-//               <img
-//                 src={img}
-//                 alt={`Medical slide ${index + 1}`}
-//                 className="absolute inset-0 w-full h-full object-cover"
-//               />
-//               <div className="absolute inset-0 bg-black bg-opacity-45" />
-//               <div className="absolute inset-0 flex items-center justify-center font-serif">
-//                 <motion.div
-//                   initial={{ opacity: 0, y: 20 }}
-//                   animate={{ opacity: 1, y: 0 }}
-//                   transition={{ duration: 0.8, delay: 0.5 }}
-//                   className="text-center text-white px-4"
-//                 >
-//                   <h3 className="text-4xl md:text-5xl font-bold mb-4 font-serif">
-//                     Exceptional healthcare{" "}
-//                   </h3>
-//                   <p className="text-xl mb-8 max-w-2xl mx-auto">
-//                     Experience top-notch medical services with our expert
-//                     doctors.{" "}
-//                   </p>
-//                   <Link to={"/doctor"}>
-//                     <motion.button
-//                       whileHover={{ scale: 1.05 }}
-//                       whileTap={{ scale: 0.95 }}
-//                       className="bg-white text-[#05464e] px-28 py-3 md:mt-3 rounded-full text-lg font-semibold hover:bg-[#e6f0f5] transition duration-300"
-//                     >
-//                       Book your appointment now{" "}
-//                     </motion.button>
-//                   </Link>
-//                 </motion.div>
-//               </div>
-//             </div>
-//           </SwiperSlide>
-//         ))}
-//       </Swiper>
-//     </section>
-//   );
-// };
-
-// export default HeroSection;
-
-
-import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 import { motion } from "framer-motion";
-
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -184,41 +21,106 @@ const HeroSection = () => {
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         navigation
-        pagination={{ clickable: true }}
-        autoplay={{ delay: 2000, disableOnInteraction: false }}
+        pagination={{ clickable: true, dynamicBullets: true }}
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
         effect="fade"
         loop
-        className="h-full w-full"
+        className="h-full w-full group"
       >
         {images.map((img, index) => (
           <SwiperSlide key={index}>
-            <div className="relative h-full w-full">
-              <img
+            <div className="relative h-full w-full overflow-hidden">
+              {/* Background Image with Slow Zoom Effect */}
+              <motion.img
+                initial={{ scale: 1.1 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 8, ease: "easeOut" }}
                 src={img}
                 alt={`Medical slide ${index + 1}`}
                 className="absolute inset-0 w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-45" />
-              <div className="absolute inset-0 flex items-center justify-center font-serif">
+
+              {/* Modern Gradient Overlay (Dark Teal to Transparent) */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#04333a]/95 via-[#04333a]/70 to-black/30" />
+
+              {/* Content Container */}
+              <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
+                {/* Floating Glassmorphism Badge */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.5 }}
-                  className="text-center text-white px-2 sm:px-4"
+                  initial={{ opacity: 0, y: -20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="mb-6 inline-block px-6 py-2 rounded-full border border-[#58e6fc]/30 bg-white/10 backdrop-blur-md shadow-lg"
                 >
-                  <h3 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 font-serif">
-                    Exceptional healthcare
-                  </h3>
-                  <p className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl mb-3 sm:mb-4 md:mb-6 lg:mb-8 max-w-[280px] xs:max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl mx-auto">
-                    Experience top-notch medical services with our expert doctors.
-                  </p>
-                  <Link to={"/doctor"}>
+                  <span className="text-[#58e6fc] font-bold tracking-widest text-sm uppercase">
+                    ✨ Welcome to MidLink
+                  </span>
+                </motion.div>
+
+                {/* Main Title */}
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 font-serif leading-tight drop-shadow-2xl"
+                >
+                  Your Health,{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#58e6fc] to-[#c4f7ff]">
+                    Our Priority
+                  </span>
+                </motion.h1>
+
+                {/* Subtitle */}
+                <motion.p
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                  className="text-base sm:text-lg md:text-xl text-gray-200 mb-10 max-w-3xl leading-relaxed drop-shadow-md"
+                >
+                  Connect with verified doctors across Jordan. Book
+                  appointments, get consultations online, and manage your health
+                  journey — all in one advanced platform.
+                </motion.p>
+
+                {/* Interactive Glowing Button */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.8,
+                    type: "spring",
+                    stiffness: 100,
+                  }}
+                >
+                  <Link to="/doctor">
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
+                      whileHover={{
+                        scale: 1.05,
+                        boxShadow: "0px 0px 25px rgba(88, 230, 252, 0.5)",
+                      }}
                       whileTap={{ scale: 0.95 }}
-                      className="bg-white text-[#05464e] px-4 xs:px-6 sm:px-10 md:px-16 lg:px-28 py-1 xs:py-2 sm:py-3 rounded-full text-xs xs:text-sm sm:text-base md:text-lg font-semibold hover:bg-[#e6f0f5] transition duration-300"
+                      className="relative overflow-hidden group/btn bg-gradient-to-r from-[#075561] to-[#04333a] border border-[#58e6fc]/50 text-white px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 flex items-center justify-center gap-3 shadow-xl"
                     >
-                      Book appointment
+                      <span className="relative z-10 flex items-center gap-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        Book Appointment
+                      </span>
+                      {/* Hover effect overlay inside button */}
+                      <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-[#58e6fc] to-[#075561] opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 z-0"></div>
                     </motion.button>
                   </Link>
                 </motion.div>

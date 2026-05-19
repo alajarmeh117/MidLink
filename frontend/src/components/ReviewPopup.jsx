@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { submitReview, clearMessage } from "../store/reviewSlice";
 import { X, Star, CheckCircle, Loader } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+
 
 // Custom Alert component
 const CustomAlert = ({ children }) => (
@@ -12,6 +14,11 @@ const CustomAlert = ({ children }) => (
     <div>{children}</div>
   </div>
 );
+
+
+CustomAlert.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 const ReviewPopup = ({ onClose, appointmentId }) => {
   const dispatch = useDispatch();
@@ -178,4 +185,9 @@ const ReviewPopup = ({ onClose, appointmentId }) => {
   );
 };
 
-export default ReviewPopup;
+ReviewPopup.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  appointmentId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
+
+export default ReviewPopup;  

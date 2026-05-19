@@ -1,32 +1,30 @@
 import React from "react";
 import { useSelector } from "react-redux";
-// import Sidebar from "./components/Sidebar";
 import DoctorAppointments from "./components/appointments";
-// import PatientRecords from "./components/patiantsRecords";
+
 const DoctorHome = () => {
   const { user } = useSelector((state) => state.auth);
 
   return (
-    // <div className="flex h-screen bg-gray-100">
-    //   <Sidebar />
-    //   <div className="flex-1 overflow-auto">
-    //     <div className="container mx-auto px-4 py-8">
-    //       {/* <h1 className="text-3xl font-bold mb-4">Doctor Dashboard</h1> */}
-    //   <h2 className="text-xl mb-4 mt-4 text-center font-serif font-semibold text-[#1F2B6C]">
-    //         {" "}
-    //         Welcome Doctor, {user?.staff_name || "مالك"}
-    //       </h2>
-          // <DoctorAppointments />
-          // <PatientRecords />
-    //     </div>
-    //   </div>
-    // </div>
-    <div className="container mx-auto px-4 py-8 bg-white">
-      {/* <h1 className="text-3xl font-bold mb-4">Doctor Dashboard</h1> */}
-      {/* <h2 className="text-xl mb-4 mt-4 text-center font-serif font-semibold text-[#1F2B6C]">
-        Welcome Doctor, {user?.staff_name || "مالك"}
-      </h2> */}
-       <DoctorAppointments />
+    <div className="container mx-auto px-4 py-8 animate-[fadeIn_0.5s_ease-in-out]">
+      {/* Welcome Banner */}
+      <div className="mb-8 bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between transition-all hover:shadow-md">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#0f4c5c]">
+            Welcome back,{" "}
+            <span className="text-[#2dd4bf]">
+              Dr. {user?.staff_name || "Doctor"}
+            </span>
+          </h2>
+          <p className="text-slate-500 mt-2 text-sm md:text-base">
+            Here is your daily overview. Manage your appointments and patients
+            efficiently.
+          </p>
+        </div>
+      </div>
+
+      {/* Main Appointments Dashboard */}
+      <DoctorAppointments />
     </div>
   );
 };

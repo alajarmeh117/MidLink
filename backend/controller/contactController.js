@@ -7,8 +7,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: 'abedalmajedalajarmah@gmail.com',
-    pass: 'ndgx zdev lywb gohb'
+    user: 'midlink81@gmail.com',
+    pass: 'nqjz gdaz ylfo dvtj'
   },
 });
 
@@ -62,7 +62,7 @@ exports.respondToContact = async (req, res) => {
 
     // Send email
     const mailOptions = {
-      from: 'abedalmajedalajarmah@gmail.com',
+      from: 'midlink81@gmail.com',
       to: contactEmail,
       subject: 'Response to your contact message',
       text: response,

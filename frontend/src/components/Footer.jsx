@@ -1,120 +1,146 @@
-// // Footer.js
-// import React from 'react';
-
-// const Footer = () => {
-//   return (
-//     <footer className="bg-gray-800 text-gray-300 py-8">
-//       <div className="container mx-auto px-4">
-//         <div className="flex flex-col md:flex-row justify-between items-center">
-//           {/* Website Name */}
-//           <div className="text-xl font-bold text-white mb-4 md:mb-0">
-//             WebsiteName
-//           </div>
-
-//           {/* Links */}
-//           <div className="flex space-x-6 mb-4 md:mb-0">
-//             <a href="/" className="hover:text-white">Home</a>
-//             <a href="/about" className="hover:text-white">About</a>
-//             <a href="/contact" className="hover:text-white">Contact</a>
-//             <a href="/doctor" className="hover:text-white">Our Doctor</a>
-//           </div>
-
-//           {/* Social Icons */}
-//           <div className="flex space-x-4">
-//             <a href="https://facebook.com" className="hover:text-white">
-//               <i className="fab fa-facebook-f"></i> {/* Font Awesome Icon */}
-//             </a>
-//             <a href="https://twitter.com" className="hover:text-white">
-//               <i className="fab fa-twitter"></i> {/* Font Awesome Icon */}
-//             </a>
-//             <a href="https://instagram.com" className="hover:text-white">
-//               <i className="fab fa-instagram"></i> {/* Font Awesome Icon */}
-//             </a>
-//             <a href="https://linkedin.com" className="hover:text-white">
-//               <i className="fab fa-linkedin-in"></i> {/* Font Awesome Icon */}
-//             </a>
-//           </div>
-//         </div>
-
-//         {/* Copyright */}
-//         <div className="text-center mt-8">
-//           <p className="text-sm text-gray-400">
-//             &copy; {new Date().getFullYear()} WebsiteName. All rights reserved.
-//           </p>
-//         </div>
-//       </div>
-//     </footer>
-//   );
-// };
-
-// export default Footer;
-
-import React from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+  HeartPulse,
+} from "lucide-react";
 
 const Footer = () => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   return (
-    <footer className="bg-[#04333a] text-white py-12">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-wrap justify-between">
-          <div className="w-full md:w-1/4 mb-8 md:mb-0">
-            <h3 className="text-2xl font-bold mb-4">MediBook</h3>
-            <p>Your trusted platform for medical appointments.</p>
+    <footer className="relative bg-[#04333a] text-white pt-20 pb-10 font-serif overflow-hidden">
+      {/* Top Glowing Border */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#04333a] via-[#58e6fc] to-[#04333a] opacity-50"></div>
+
+      {/* Abstract Background Decor */}
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-[#0a7a8c] rounded-full blur-3xl opacity-20"></div>
+
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          {/* Brand Section */}
+          <div className="space-y-6">
+            <Link to="/" className="flex items-center gap-2">
+              <HeartPulse className="w-8 h-8 text-[#58e6fc]" />
+              <h3 className="text-3xl font-extrabold tracking-wide text-white">
+                Mid<span className="text-[#58e6fc]">Link</span>
+              </h3>
+            </Link>
+            <p className="text-[#c4f7ff] leading-relaxed text-sm">
+              Your trusted platform for smart medical appointments and seamless
+              healthcare services across Jordan.
+            </p>
           </div>
-          <div className="w-full md:w-1/4 mb-8 md:mb-0">
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul>
-              <li>
-                <a href="#" className="hover:text-[#e6f0f5]">
-                  Home
-                </a>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-xl font-bold mb-6 text-white border-b border-white/10 pb-2 inline-block">
+              Quick Links
+            </h4>
+            <ul className="space-y-3">
+              {["Home", "About", "Contact", "Our Doctors"].map((item, idx) => (
+                <li key={idx}>
+                  <Link
+                    to={
+                      item === "Home"
+                        ? "/"
+                        : `/${item.toLowerCase().replace(" ", "-")}`
+                    }
+                    className="text-gray-300 hover:text-[#58e6fc] transition-colors duration-300 flex items-center group"
+                  >
+                    <span className="w-0 overflow-hidden group-hover:w-4 transition-all duration-300">
+                      ▹
+                    </span>
+                    {item}
+                  </Link>
+                </li>
+              ))}
+              {isAuthenticated && (
+                <li>
+                  <Link
+                    to="/feedback"
+                    className="text-gray-300 hover:text-[#58e6fc] transition-colors duration-300 flex items-center group"
+                  >
+                    <span className="w-0 overflow-hidden group-hover:w-4 transition-all duration-300">
+                      ▹
+                    </span>{" "}
+                    Feedback
+                  </Link>
+                </li>
+              )}
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h4 className="text-xl font-bold mb-6 text-white border-b border-white/10 pb-2 inline-block">
+              Contact Us
+            </h4>
+            <ul className="space-y-4 text-gray-300">
+              <li className="flex items-start gap-3 hover:text-[#58e6fc] transition-colors">
+                <MapPin className="w-5 h-5 text-[#58e6fc] shrink-0 mt-1" />
+                <span>Medical Street, Amman, Jordan</span>
               </li>
-              <li>
-                <a href="#" className="hover:text-[#e6f0f5]">
-                  Services
-                </a>
+              <li className="flex items-center gap-3 hover:text-[#58e6fc] transition-colors">
+                <Phone className="w-5 h-5 text-[#58e6fc] shrink-0" />
+                <span>+962 78 005 1538</span>
               </li>
-              <li>
-                <a href="#" className="hover:text-[#e6f0f5]">
-                  Doctors
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#e6f0f5]">
-                  Contact
-                </a>
+              <li className="flex items-center gap-3 hover:text-[#58e6fc] transition-colors">
+                <Mail className="w-5 h-5 text-[#58e6fc] shrink-0" />
+                <span>info@midlink.com</span>
               </li>
             </ul>
           </div>
-          <div className="w-full md:w-1/4 mb-8 md:mb-0">
-            <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
-            <p>123 Medical Street</p>
-            <p>City, Country 12345</p>
-            <p>Phone: (123) 456-7890</p>
-            <p>Email: info@medibook.com</p>
-          </div>
-          <div className="w-full md:w-1/4">
-            <h4 className="text-lg font-semibold mb-4">Follow Us</h4>
-            <div className="flex space-x-2">
-              <a href="#" className="hover:text-[#e6f0f5]">
-                Facebook
-              </a>
-              <a href="#" className="hover:text-[#e6f0f5]">
-                Twitter
-              </a>
-              <a href="#" className="hover:text-[#e6f0f5]">
-                Instagram
-              </a>
-              <a href="#" className="hover:text-[#e6f0f5]">
-                LinkedIn
-              </a>
+
+          {/* Social Media */}
+          <div>
+            <h4 className="text-xl font-bold mb-6 text-white border-b border-white/10 pb-2 inline-block">
+              Follow Us
+            </h4>
+            <p className="text-gray-300 mb-6 text-sm">
+              Stay updated with our latest health tips and platform updates.
+            </p>
+            <div className="flex gap-4">
+              {[Facebook, Twitter, Instagram, Linkedin].map((Icon, idx) => (
+                <motion.a
+                  key={idx}
+                  href="#"
+                  whileHover={{ y: -5, scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="bg-white/10 p-3 rounded-xl text-white hover:bg-[#58e6fc] hover:text-[#04333a] transition-colors shadow-lg"
+                >
+                  <Icon className="w-5 h-5" />
+                </motion.a>
+              ))}
             </div>
           </div>
         </div>
-        <div className="border-t border-white/20 mt-8 pt-8 text-center">
-          <p>&copy; 2024 MediBook. All rights reserved.</p>
+
+        {/* Copyright */}
+        <div className="border-t border-white/10 pt-8 text-center flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-400 text-sm">
+            &copy; {new Date().getFullYear()} MidLink Healthcare. All rights
+            reserved.
+          </p>
+          <div className="flex gap-6 text-sm text-gray-400">
+            <a href="#" className="hover:text-white transition-colors">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              Terms of Service
+            </a>
+          </div>
         </div>
       </div>
     </footer>
   );
 };
+
 export default Footer;

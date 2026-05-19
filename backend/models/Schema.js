@@ -6,7 +6,8 @@
 //     profile_image VARCHAR(255),
 //     specialty VARCHAR(50) NOT NULL,
 //     bio TEXT,
-//     is_approved BOOLEAN DEFAULT TRUE
+//     license_file VARCHAR(255),
+//     is_approved BOOLEAN DEFAULT FALSE
 // );
 
 // CREATE TABLE patients (
@@ -30,8 +31,6 @@
 //     password VARCHAR(255) NOT NULL
 // );
 
-
-
 // CREATE TYPE appointment_status_enum AS ENUM ('SCHEDULED', 'COMPLETED', 'CANCELLED');
 
 // CREATE TABLE appointments (
@@ -44,8 +43,6 @@
 //     FOREIGN KEY (available_id) REFERENCES doctor_availability(available_id),
 //     FOREIGN KEY (id) REFERENCES patients(id)
 // );
-
-
 
 // CREATE TABLE doctor_availability (
 //     available_id SERIAL PRIMARY KEY,
@@ -60,16 +57,12 @@
 //     UNIQUE (staff_id, available_start_date, available_start_time)
 // );
 
-
 // CREATE TABLE payments (
 //     payment_id SERIAL PRIMARY KEY,
 //     appointment_id BIGINT NOT NULL,
 //     value INTEGER NOT NULL,
 //     FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id)
 // );
-
-
-
 
 // CREATE TABLE healthcare_records (
 //     record_id SERIAL PRIMARY KEY,
@@ -86,11 +79,6 @@
 //     FOREIGN KEY (staff_id) REFERENCES medical_staff(staff_id)
 // );
 
-
-
-// ////////////////
-
-
 // CREATE TABLE doctor_comments (
 //     comment_id SERIAL PRIMARY KEY,
 //     doctor_id INT NOT NULL,
@@ -103,7 +91,6 @@
 //     FOREIGN KEY (parent_comment_id) REFERENCES doctor_comments(comment_id)
 // );
 
-
 // CREATE TABLE feedback (
 //     id SERIAL PRIMARY KEY,
 //     FOREIGN KEY (id) REFERENCES patients(id),
@@ -111,10 +98,8 @@
 //     rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
 //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //     is_deleted BOOLEAN DEFAULT FALSE
-//   );
+// );
 
-
-//  Create the notifications table with all columns and constraints
 // CREATE TABLE notifications (
 //     id SERIAL PRIMARY KEY,
 //     user_id INTEGER NOT NULL,
@@ -126,16 +111,6 @@
 //     FOREIGN KEY (user_id) REFERENCES patients(id),
 //     FOREIGN KEY (doctor_id) REFERENCES medical_staff(staff_id)
 // );
-
-// CREATE TABLE payments (
-//     payment_id SERIAL PRIMARY KEY,
-//     appointment_id BIGINT NOT NULL,
-//     user_id BIGINT NOT NULL,       -- Added this column to track which user made the payment
-//     amount DECIMAL(10, 2) NOT NULL,  --
-//     payment_status VARCHAR(50) NOT NULL, -- Track the status of the payment
-//     FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id)
-// );
-
 
 // CREATE TABLE reviews(
 //     review_id SERIAL PRIMARY KEY,
@@ -150,11 +125,21 @@
 //     FOREIGN KEY(staff_id) REFERENCES medical_staff(staff_id)
 // );
 
-
 // CREATE TABLE contacts (
-//     contact_id SERIAL PRIMARY KEY, 
-//     name VARCHAR(255) NOT NULL,  
-//     email VARCHAR(255) NOT NULL,  
+//     contact_id SERIAL PRIMARY KEY,
+//     name VARCHAR(255) NOT NULL,
+//     email VARCHAR(255) NOT NULL,
 //     message TEXT NOT NULL,
 //     respond TEXT DEFAULT NULL
+// );
+
+// --- الجدول الجديد الخاص بقائمة الانتظار ---
+// CREATE TABLE waiting_list (
+//     waiting_id SERIAL PRIMARY KEY,
+//     doctor_id INT NOT NULL,
+//     patient_id BIGINT NOT NULL,
+//     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//     is_notified BOOLEAN DEFAULT FALSE,
+//     FOREIGN KEY (doctor_id) REFERENCES medical_staff(staff_id),
+//     FOREIGN KEY (patient_id) REFERENCES patients(id)
 // );
