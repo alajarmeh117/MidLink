@@ -1,48 +1,71 @@
-# Hospital Management System
+# 🏥 MidLink Healthcare Platform
 
-This web application is designed to streamline hospital operations, enhance patient care, and improve overall hospital efficiency for a  hospital. The platform supports administrators, healthcare providers, and patients in managing medical records, appointments, billing, and staff schedules.
+An enterprise-level, intelligent digital healthcare ecosystem tailored for modern medical service delivery. **MidLink** seamlessly bridges the gap between patients, verified medical professionals, and administrators by uniting advanced real-time scheduling, secure WebRTC consultations, AI-powered triage, and rigorous credential verification within a single, high-performance platform.
 
-## Project Team
+---
 
-- **Scrum Master:** Rafah Mahmoud
-- **QA:** Mohammad Abdullah
-- **Product Owner:** Abd-Al-majeed
-- **Developers:** Aya Al-Rimawi, Omar Muhanad and Malek Shhadeh.
+## 🚀 Key Features Matrix
 
-## Key Features
+### 🔐 1. Role-Based Access Control & Security
 
-### 1. User Roles:
-- **Administrators:** Manage hospital operations, staff schedules, patient records, and billing. Oversee feedback and content moderation.
-- **Healthcare Providers (Doctors/Nurses):** Manage patient medical records, treatment plans, diagnostic results, and communicate with patients.
-- **Patients:** Access personal health information, book appointments, and make payments securely.
+- **Multi-Tier Identity Management:** Dedicated dashboards and completely isolated linear workflows for **Patients**, **Doctors**, and **System Administrators**.
+- **Secure Authentication:** Token-based authentication powered by `JSON Web Tokens (JWT)` and `bcrypt` password hashing, securely transported via stateful, `HttpOnly` cross-site cookies.
 
-### 2. User Registration and Authentication:
-- Secure role-based authentication system.
+### 👨‍⚕️ 2. Bulletproof Doctor Onboarding & Admin Verification
 
+- **Mandatory CV Validation (Backend Firewall):** A secure document upload pipeline using `Multer`. Doctors cannot complete registration without providing a valid medical license/CV in PDF format—validated strictly at both frontend and database controller levels.
+- **Administrative Credentials Review:** A professional dashboard for administrators to view pending applications, inspect uploaded PDF certificates instantly via custom tab view portals, and toggle verification flags (`Verify` / `Revoke Access`).
+- **Automated Mailing Workflow:** Triggered back-end notifications via `Nodemailer` that dynamically send official confirmation or update emails to doctors upon admin review.
 
-### 3. Patient and Appointment Management:
-- **Patient Records:** Healthcare providers can create, update, and manage patient records.
-- **Appointment Scheduling:** Patients can book, reschedule, and cancel appointments. Doctors manage schedules and mark appointments as complete.
+### ⏳ 3. Smart Cancellation Lifecycle & Automated Waiting List (Real-Time)
 
-### 4. Billing and Payment Processing:
-- Patients can view bills and make payments securely.
-- (Optional) Integration with Stripe or PayPal for secure payment processing.
+- **The 24-Hour Rule Policy:** Calculated precisely via a timezone-aware time engine. If a patient cancels a booking more than 24 hours in advance, the slot is instantly freed with full eligibility for a refund. Inside the 24-hour window, the interface triggers a high-visibility warning indicating non-refundable terms.
+- **Atomic DB Operations (ACID Transactions):** Seamlessly executes status updates across multiple interrelated entities—marking appointments as `CANCELLED`, freeing the slot in `doctor_availability` (`is_booked = FALSE`), and recording financial updates in a single workflow.
+- **WebSocket Waiting List Pull:** The moment a slot is freed, a real-time reactive trigger queries the `waiting_list` table and immediately broadcasts a `Socket.io` notification update exclusively to rooms belonging to waitlisted patients, enabling them to grab the slot instantly.
 
-### 5. Staff Scheduling and Task Management:
-- Healthcare providers can update their availability and view schedules.
+### 🧠 4. AI-Powered Medical Triage & Symptom Checker
 
-## Website Structure
+- **Natural Language Processing (NLP) Intake:** Patients can freely describe their clinical complaints in plain Arabic or English text.
+- **Intelligent Specialist Routing:** Powered by an integrated AI model framework (`aiController.js`) that analyzes symptoms, intercepts medical emergencies to display high-priority warning screens, and auto-recommends the most accurate clinical specialty to eliminate misbooking overhead.
 
-- **Home Page:** Overview of the hospital management system and its features.
-- **Login/Register Page:** Secure access for patients, healthcare providers, and administrators.
-- **User Profile Page:** Displays user details, including medical history and appointments.
-- **Appointment Management Page:** Patients view appointments, doctors manage schedules.
-- **Patient Record Management Page:** Healthcare providers manage patient records and medical histories.
-- **Billing and Payments Page:** Displays billing information and secure payment options.
-- **Admin Dashboard:** Tools for hospital performance analytics, managing records, staff schedules, and user interactions.
-- **About Us & Contact Pages:** Information about the hospital and communication methods.
+### 📊 5. Interactive Medical Workspace & Dashboards
 
-## Project Management Links
+- **Doctor Clinical Overview:** Real-time metrics showing total daily bookings, total revenue, and cumulative rating aggregates. Includes interactive glassmorphism analytical graphs drawn using `Recharts (AreaChart)`.
+- **Patient Health Passport:** A robust dashboard containing vitals (blood group, allergies, chronic conditions) alongside a historical tabular log of all consultations.
+- **Digital Medical Invoicing & Prescriptions:** Automatically generates and processes custom clinical documents exported directly as beautifully structured PDFs via `jsPDF` for patients upon session completion.
 
-- [Figma Design](i[nsert_link_here](https://www.figma.com/design/B9KdwK7aSDacHFsh2NCuWn/malek-shehadeh's-team-library?node-id=0-1&node-type=canvas&t=GjVNNRD7wRQiygEh-0))
-- [Trello Board]([insert_link_here](https://trello.com/b/AZ07FWUb/hospital-management-system))
+### 💬 6. Threaded Q&A and Feedback System
+
+- Fully integrated interactive discussion review boards on doctor profiles allowing patients to leave multi-criteria structured reviews and submit questions. Doctors receive instant push updates and can reply directly in a nested thread structure.
+
+---
+
+## 🛠️ Tech Stack & Architecture
+
+### Frontend Layer
+
+- **Core Framework:** React.js (Single Page Application architecture)
+- **State Management:** Redux Toolkit (Slices for asynchronous authentication and appointments pipeline)
+- **Styling Framework:** Tailwind CSS (Highly modern sleek glassmorphic UI design)
+- **Real-time Engine:** Socket.io-client
+- **Icons & Animation:** Lucide React & Framer Motion
+
+### Backend Layer
+
+- **Runtime Environment:** Node.js (v20+ execution)
+- **Application Framework:** Express.js (Modular architectural controllers & routing)
+- **Database Engine:** PostgreSQL (Relational multi-table normalization)
+- **Real-time Gateway:** Socket.io WebSockets Integration
+- **Mail Server Gateway:** Nodemailer SMTP Integration
+
+---
+
+## 🏁 Getting Started
+
+### 📋 Prerequisites
+
+Ensure you have the following installed on your target deployment machine:
+
+- **Node.js** (v20 or higher)
+- **npm** (v10 or higher)
+- **PostgreSQL Server** (v15 or higher)
