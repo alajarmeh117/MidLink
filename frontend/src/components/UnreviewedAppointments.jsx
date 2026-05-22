@@ -25,7 +25,7 @@ const UnreviewedAppointments = () => {
       for (const appointment of appointments) {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/appointment/doctor/${appointment.appointment_id}`
+            `https://midlink-of4r.onrender.com/api/appointment/doctor/${appointment.appointment_id}`,
           );
           doctorNames[appointment.appointment_id] = response.data.staff_name;
         } catch (error) {
@@ -51,7 +51,7 @@ const UnreviewedAppointments = () => {
       setAnimating(true);
       setTimeout(() => {
         setCurrentIndex((prevIndex) =>
-          prevIndex > 0 ? prevIndex - 1 : appointments.length - 1
+          prevIndex > 0 ? prevIndex - 1 : appointments.length - 1,
         );
         setAnimating(false);
       }, 300);
@@ -64,7 +64,7 @@ const UnreviewedAppointments = () => {
       setAnimating(true);
       setTimeout(() => {
         setCurrentIndex((prevIndex) =>
-          prevIndex < appointments.length - 1 ? prevIndex + 1 : 0
+          prevIndex < appointments.length - 1 ? prevIndex + 1 : 0,
         );
         setAnimating(false);
       }, 300);
@@ -101,7 +101,7 @@ const UnreviewedAppointments = () => {
               }`}
             >
               <div className="bg-[#e6f0f5] rounded-lg p-6 shadow-sm">
-                <div  className="flex flex-col md:flex-row justify-between items-center mb-4">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-4">
                   <div className="space-y-2 mb-4 md:mb-0">
                     <div className="flex items-center text-lg text-[#05464e]">
                       <Calendar className="w-5 h-5 mr-2 text-[#05464e]" />
@@ -121,12 +121,12 @@ const UnreviewedAppointments = () => {
                       <span>
                         {appointments[currentIndex].available_start_date &&
                           new Date(
-                            appointments[currentIndex].available_start_date
+                            appointments[currentIndex].available_start_date,
                           ).toLocaleDateString()}{" "}
                         {appointments[currentIndex].available_start_time &&
                           appointments[currentIndex].available_start_time.slice(
                             0,
-                            5
+                            5,
                           )}
                       </span>
                     </div>

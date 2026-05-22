@@ -109,7 +109,7 @@ const DoctorRegistrationModal = ({ isOpen, onClose }) => {
       formDataToSend.append("cv", cvFile);
 
       await axios.post(
-        "http://localhost:5000/api/doctors/register",
+        "https://midlink-of4r.onrender.com/api/doctors/register",
         formDataToSend,
         { headers: { "Content-Type": "multipart/form-data" } },
       );

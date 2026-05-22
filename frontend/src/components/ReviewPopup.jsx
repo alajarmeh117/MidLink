@@ -6,7 +6,6 @@ import { X, Star, CheckCircle, Loader } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 
-
 // Custom Alert component
 const CustomAlert = ({ children }) => (
   <div className="bg-[#e6f0f5] border-l-4 border-[#05464e] text-[#05464e] p-4 rounded-md shadow-md flex items-center space-x-2">
@@ -14,7 +13,6 @@ const CustomAlert = ({ children }) => (
     <div>{children}</div>
   </div>
 );
-
 
 CustomAlert.propTypes = {
   children: PropTypes.node.isRequired,
@@ -33,7 +31,7 @@ const ReviewPopup = ({ onClose, appointmentId }) => {
     const fetchDoctorName = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/appointment/doctor/${appointmentId}`
+          `https://midlink-of4r.onrender.com/api/appointment/doctor/${appointmentId}`,
         );
         setDoctorName(response.data.staff_name);
       } catch (error) {
@@ -56,7 +54,7 @@ const ReviewPopup = ({ onClose, appointmentId }) => {
     e.preventDefault();
     if (status !== "loading") {
       dispatch(
-        submitReview({ rating, reviewContent, appointment_id: appointmentId })
+        submitReview({ rating, reviewContent, appointment_id: appointmentId }),
       );
     }
   };
@@ -187,7 +185,8 @@ const ReviewPopup = ({ onClose, appointmentId }) => {
 
 ReviewPopup.propTypes = {
   onClose: PropTypes.func.isRequired,
-  appointmentId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  appointmentId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
 };
 
-export default ReviewPopup;  
+export default ReviewPopup;

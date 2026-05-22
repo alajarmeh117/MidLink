@@ -15,10 +15,15 @@ const ForgotPassword = () => {
     setMessage(null);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/forgot-password", { email });
+      const response = await axios.post(
+        "https://midlink-of4r.onrender.com/api/auth/forgot-password",
+        { email },
+      );
       setMessage(response.data.message);
     } catch (error) {
-      setMessage(error.response?.data?.message || "An error occurred. Try again.");
+      setMessage(
+        error.response?.data?.message || "An error occurred. Try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }

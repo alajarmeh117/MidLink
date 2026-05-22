@@ -1,116 +1,155 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const initialState = {
   user: null,
   userType: null,
   isAuthenticated: false,
   loading: false,
-  error: null
+  error: null,
 };
 
 export const signup = createAsyncThunk(
-  'auth/signup',
+  "auth/signup",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', userData);
+      const response = await axios.post(
+        "https://midlink-of4r.onrender.com/api/auth/signup",
+        userData,
+      );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'An error occurred' });
+      return rejectWithValue(
+        error.response?.data || { message: "An error occurred" },
+      );
     }
-  }
+  },
 );
 
 export const login = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', credentials, {
-        withCredentials: true
-      });
+      const response = await axios.post(
+        "https://midlink-of4r.onrender.com/api/auth/login",
+        credentials,
+        {
+          withCredentials: true,
+        },
+      );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'An error occurred' });
+      return rejectWithValue(
+        error.response?.data || { message: "An error occurred" },
+      );
     }
-  }
+  },
 );
 
 export const logout = createAsyncThunk(
-  'auth/logout',
+  "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post('http://localhost:5000/api/auth/logout', {}, { withCredentials: true });
-      Cookies.remove('Doctor Token');
-      Cookies.remove('Patient Token');
+      await axios.post(
+        "https://midlink-of4r.onrender.com/api/auth/logout",
+        {},
+        { withCredentials: true },
+      );
+      Cookies.remove("Doctor Token");
+      Cookies.remove("Patient Token");
       return;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'An error occurred during logout' });
+      return rejectWithValue(
+        error.response?.data || { message: "An error occurred during logout" },
+      );
     }
-  }
+  },
 );
 
 export const checkAuthStatus = createAsyncThunk(
-  'auth/checkAuthStatus',
+  "auth/checkAuthStatus",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:5000/api/auth/status', {
-        withCredentials: true
-      });
+      const response = await axios.get(
+        "https://midlink-of4r.onrender.com/api/auth/status",
+        {
+          withCredentials: true,
+        },
+      );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Authentication check failed' });
+      return rejectWithValue(
+        error.response?.data || { message: "Authentication check failed" },
+      );
     }
-  }
+  },
 );
 
 export const getProfile = createAsyncThunk(
-  'auth/getProfile',
+  "auth/getProfile",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('http://localhost:5000/api/patients/profile', {
-        withCredentials: true
-      });
+      const response = await axios.get(
+        "https://midlink-of4r.onrender.com/api/patients/profile",
+        {
+          withCredentials: true,
+        },
+      );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to fetch profile' });
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to fetch profile" },
+      );
     }
-  }
+  },
 );
 
 export const updateProfile = createAsyncThunk(
-  'auth/updateProfile',
+  "auth/updateProfile",
   async (profileData, { rejectWithValue }) => {
     try {
-      const response = await axios.put('http://localhost:5000/api/patients/profile', profileData, {
-        withCredentials: true
-      });
+      const response = await axios.put(
+        "https://midlink-of4r.onrender.com/api/patients/profile",
+        profileData,
+        {
+          withCredentials: true,
+        },
+      );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to update profile' });
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to update profile" },
+      );
     }
-  }
+  },
 );
 
 export const updateProfileImage = createAsyncThunk(
-  'auth/updateProfileImage',
+  "auth/updateProfileImage",
   async (imageFile, { rejectWithValue }) => {
     try {
       const formData = new FormData();
-      formData.append('profileImage', imageFile);
-      const response = await axios.put('http://localhost:5000/api/patients/profile-image', formData, {
-        withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      formData.append("profileImage", imageFile);
+      const response = await axios.put(
+        "https://midlink-of4r.onrender.com/api/patients/profile-image",
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: 'Failed to update profile image' });
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to update profile image" },
+      );
     }
-  }
+  },
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -125,7 +164,7 @@ const authSlice = createSlice({
       })
       .addCase(signup.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || 'An error occurred';
+        state.error = action.payload?.message || "An error occurred";
       })
       .addCase(login.pending, (state) => {
         state.loading = true;
@@ -139,7 +178,7 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || 'An error occurred';
+        state.error = action.payload?.message || "An error occurred";
       })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
@@ -147,7 +186,8 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
       .addCase(logout.rejected, (state, action) => {
-        state.error = action.payload?.message || 'An error occurred during logout';
+        state.error =
+          action.payload?.message || "An error occurred during logout";
       })
       .addCase(checkAuthStatus.fulfilled, (state, action) => {
         state.isAuthenticated = true;
@@ -170,7 +210,7 @@ const authSlice = createSlice({
           state.user.profile_image = action.payload.profileImage;
         }
       });
-  }
+  },
 });
 
 export default authSlice.reducer;

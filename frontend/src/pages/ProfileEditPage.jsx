@@ -121,7 +121,7 @@ const ProfileEditPage = () => {
     if (localImageUrl) {
       return localImageUrl;
     } else if (profileImage) {
-      return `http://localhost:5000/${profileImage}`;
+      return `https://midlink-of4r.onrender.com/${profileImage}`;
     }
     return "https://via.placeholder.com/150";
   };

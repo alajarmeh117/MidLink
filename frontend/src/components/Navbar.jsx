@@ -50,7 +50,7 @@ const Navbar = () => {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/notification/notifications",
+        "https://midlink-of4r.onrender.com/api/notification/notifications",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         },
@@ -95,7 +95,7 @@ const Navbar = () => {
       user.profile_image !== "null" &&
       user.profile_image !== "undefined"
     ) {
-      return `http://localhost:5000/${user.profile_image}`;
+      return `https://midlink-of4r.onrender.com/${user.profile_image}`;
     }
     // إذا ما في صورة، اصنع صورة بأول حرف من اسمه بألوان السيستم
     const displayName = user?.username || user?.staff_name || "User";
@@ -105,7 +105,7 @@ const Navbar = () => {
   const handleMarkAsRead = async (notificationId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/notification/notifications/${notificationId}/read`,
+        `https://midlink-of4r.onrender.com/api/notification/notifications/${notificationId}/read`,
         null,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

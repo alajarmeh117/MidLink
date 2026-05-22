@@ -7,10 +7,10 @@ export const fetchUnreviewedAppointments = createAsyncThunk(
   "appointments/fetchUnreviewedAppointments",
   async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/appointment/unreviewed-appointments"
+      "https://midlink-of4r.onrender.com/api/appointment/unreviewed-appointments",
     );
     return response.data;
-  }
+  },
 );
 
 const MappointmentsSlice = createSlice({

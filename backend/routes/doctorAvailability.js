@@ -15,12 +15,12 @@ router.get("/availabilities", authenticateDoctor, getDoctorAvailabilities);
 router.put(
   "/availability/:availableId",
   authenticateDoctor,
-  updateAvailability
+  updateAvailability,
 );
 router.delete(
   "/availability/:availableId",
   authenticateDoctor,
-  deleteAvailability
+  deleteAvailability,
 );
 //* ----------------
 
@@ -30,7 +30,7 @@ module.exports = router;
 
 //?postman ...
 //TODOO ...... doctorAvailability .... POST ...
-//*http://localhost:5000/api/doctor/set-availability
+//*https://midlink-of4r.onrender.com/api/doctor/set-availability
 
 // {
 //   "availableStartDate": "2024-09-20",
@@ -40,13 +40,13 @@ module.exports = router;
 // }
 
 // TODOO ...... getAvailability WebSite .... GET ...
-// * http://localhost:5000/api/doctor/availabilities/:staffId
+// * https://midlink-of4r.onrender.com/api/doctor/availabilities/:staffId
 
 //TODOO ...... getAvailability Dashboard .... GET ...
-//* http://localhost:5000/api/doctor/availabilities
+//* https://midlink-of4r.onrender.com/api/doctor/availabilities
 
 //TODOO ...... updateAvailability .... PUT ...
-//* http://localhost:5000/api/doctor/availability/{availableId}
+//* https://midlink-of4r.onrender.com/api/doctor/availability/{availableId}
 
 // {
 //   "availableStartDate": "2024-09-21",
@@ -56,4 +56,4 @@ module.exports = router;
 // }
 
 //TODOO ...... deleteAvailability .... DELETE ...
-//* http://localhost:5000/api/doctor/availability/{availableId}
+//* https://midlink-of4r.onrender.com/api/doctor/availability/{availableId}

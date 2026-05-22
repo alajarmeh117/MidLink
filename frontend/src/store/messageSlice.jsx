@@ -1,21 +1,24 @@
 // messageSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const sendMessage = createAsyncThunk(
-  'message/sendMessage',
+  "message/sendMessage",
   async (messageData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/messages', messageData);
+      const response = await axios.post(
+        "https://midlink-of4r.onrender.com/api/messages",
+        messageData,
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 const messageSlice = createSlice({
-  name: 'message',
+  name: "message",
   initialState: {
     loading: false,
     success: false,

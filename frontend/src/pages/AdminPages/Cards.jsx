@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Card from "./Card";
 import "./Cards.css";
@@ -8,7 +7,7 @@ import {
   UilClipboardAlt,
   UilCalendarAlt,
 } from "@iconscout/react-unicons";
-import axios from 'axios';
+import axios from "axios";
 
 const Cards = () => {
   const [patientCount, setPatientCount] = useState(0);
@@ -20,17 +19,25 @@ const Cards = () => {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const patientResponse = await axios.get('http://localhost:5000/api/Allpatients/count');
-        const doctorResponse = await axios.get('http://localhost:5000/api/admin/doctors/count');
-        const appointmentResponse = await axios.get('http://localhost:5000/api/AdminPatientAppointments/count');
-        const scheduleResponse = await axios.get('http://localhost:5000/api/schedules/count');
-        
+        const patientResponse = await axios.get(
+          "https://midlink-of4r.onrender.com/api/Allpatients/count",
+        );
+        const doctorResponse = await axios.get(
+          "https://midlink-of4r.onrender.com/api/admin/doctors/count",
+        );
+        const appointmentResponse = await axios.get(
+          "https://midlink-of4r.onrender.com/api/AdminPatientAppointments/count",
+        );
+        const scheduleResponse = await axios.get(
+          "https://midlink-of4r.onrender.com/api/schedules/count",
+        );
+
         setPatientCount(patientResponse.data.count);
         setDoctorCount(doctorResponse.data.count);
         setAppointmentCount(appointmentResponse.data.count);
         setScheduleCount(scheduleResponse.data.count);
       } catch (error) {
-        console.error('Error fetching counts:', error);
+        console.error("Error fetching counts:", error);
       } finally {
         setLoading(false);
       }
@@ -49,7 +56,7 @@ const Cards = () => {
       barValue: patientCount,
       value: loading ? "Loading..." : patientCount.toString(),
       png: UilUsdSquare,
-      type: "patient"
+      type: "patient",
     },
     {
       title: "Doctors",
@@ -60,7 +67,7 @@ const Cards = () => {
       barValue: doctorCount,
       value: loading ? "Loading..." : doctorCount.toString(),
       png: UilMoneyWithdrawal,
-      type: "doctor"
+      type: "doctor",
     },
     {
       title: "Appointments",
@@ -71,7 +78,7 @@ const Cards = () => {
       barValue: appointmentCount,
       value: loading ? "Loading..." : appointmentCount.toString(),
       png: UilClipboardAlt,
-      type: "appointment"
+      type: "appointment",
     },
     {
       title: "Schedules",
@@ -82,7 +89,7 @@ const Cards = () => {
       barValue: scheduleCount,
       value: loading ? "Loading..." : scheduleCount.toString(),
       png: UilCalendarAlt,
-      type: "schedule"
+      type: "schedule",
     },
   ];
 

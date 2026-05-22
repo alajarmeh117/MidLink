@@ -25,7 +25,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
   const fetchAvailableSlots = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/appointment/doctors/${doctor.staff_id}/available-slots`,
+        `https://midlink-of4r.onrender.com/api/appointment/doctors/${doctor.staff_id}/available-slots`,
         { withCredentials: true },
       );
 
@@ -37,8 +37,8 @@ const AppointmentForm = ({ doctor, onClose }) => {
         const grouped = slots.reduce((acc, slot) => {
           // ✅ الحل الجذري: تحويل التاريخ للتوقيت المحلي قبل التجميع
           const d = new Date(slot.available_start_date);
-          const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-          
+          const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
           if (!acc[dateStr]) acc[dateStr] = [];
           acc[dateStr].push(slot);
           return acc;
@@ -70,7 +70,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
   const handleJoinWaitingList = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/appointment/doctors/${doctor.staff_id}/waiting-list`,
+        `https://midlink-of4r.onrender.com/api/appointment/doctors/${doctor.staff_id}/waiting-list`,
         {},
         { withCredentials: true },
       );
@@ -113,7 +113,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/appointment/appointments",
+        "https://midlink-of4r.onrender.com/api/appointment/appointments",
         {
           available_id: selectedSlot,
         },
@@ -156,7 +156,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
   const createOrder = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/payments/create-order",
+        "https://midlink-of4r.onrender.com/api/payments/create-order",
         {
           amount: "20",
           appointmentId: appointmentId,
@@ -175,7 +175,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
   const onApprove = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/payments/capture-order",
+        "https://midlink-of4r.onrender.com/api/payments/capture-order",
         {
           orderId: data.orderID,
           appointmentId: appointmentId,

@@ -9,8 +9,8 @@ const PayPalPayment = ({}) => {
   const createOrder = async (data, actions) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/payments/create-order",
-        { amount }
+        "https://midlink-of4r.onrender.com/api/payments/create-order",
+        { amount },
       );
       return response.data.id; // This returns the PayPal order ID for approval
     } catch (error) {
@@ -28,20 +28,20 @@ const PayPalPayment = ({}) => {
     // This will trigger once the user approves the payment on PayPal's side
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/payments/capture-order",
+        "https://midlink-of4r.onrender.com/api/payments/capture-order",
         {
           orderId: data.orderID, // This is the PayPal order ID from approval
           userId,
           amount,
           appointmentId,
-        }
+        },
       );
       const details = response.data;
 
       if (details.status === "COMPLETED") {
         setPaymentSuccess(true);
         console.log(
-          `Transaction completed successfully by ${details.payer.name.given_name}`
+          `Transaction completed successfully by ${details.payer.name.given_name}`,
         );
       } else {
         setPaymentError(`Transaction failed: ${details.status}`);

@@ -62,7 +62,7 @@ const Sidebar = () => {
           <div className="absolute inset-0 bg-[#2dd4bf] rounded-full animate-pulse opacity-20"></div>
           <img
             className="w-full h-full rounded-full object-cover border-2 border-[#2dd4bf] shadow-lg hover:scale-105 hover:rotate-3 transition-all duration-300 relative z-10 bg-white"
-            src={`http://localhost:5000/${profile?.profile_image}`}
+            src={`https://midlink-of4r.onrender.com/${profile?.profile_image}`}
             alt={profile?.staff_name || "Doctor"}
           />
         </div>

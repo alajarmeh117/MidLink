@@ -1,40 +1,40 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const loginAdmin = createAsyncThunk(
-  'adminAuth/login',
+  "adminAuth/login",
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/admin/login',
+        "https://midlink-of4r.onrender.com/api/admin/login",
         { email, password },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 export const logoutAdmin = createAsyncThunk(
-  'adminAuth/logout',
+  "adminAuth/logout",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/admin/logout',
+        "https://midlink-of4r.onrender.com/api/admin/logout",
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 const adminAuthSlice = createSlice({
-  name: 'adminAuth',
+  name: "adminAuth",
   initialState: {
     admin: null,
     isAuthenticated: false,
@@ -68,35 +68,6 @@ const adminAuthSlice = createSlice({
 
 export default adminAuthSlice.reducer;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // import axios from 'axios';
 
@@ -105,7 +76,7 @@ export default adminAuthSlice.reducer;
 //   async ({ email, password }, { rejectWithValue }) => {
 //     try {
 //       const response = await axios.post(
-//         'http://localhost:5000/api/admin/login',
+//         'https://midlink-of4r.onrender.com/api/admin/login',
 //         { email, password },
 //         { withCredentials: true }
 //       );
@@ -115,9 +86,6 @@ export default adminAuthSlice.reducer;
 //     }
 //   }
 // );
-
-
-
 
 // const adminAuthSlice = createSlice({
 //   name: 'adminAuth',

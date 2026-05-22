@@ -12,7 +12,7 @@ import {
   ShieldAlert,
 } from "lucide-react";
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = "https://midlink-of4r.onrender.com";
 
 const AdminFeedback = () => {
   const [feedbacks, setFeedbacks] = useState([]);

@@ -24,7 +24,9 @@ const PatientRecordsPage = () => {
   const fetchPatients = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/Allpatients");
+      const response = await axios.get(
+        "https://midlink-of4r.onrender.com/api/Allpatients",
+      );
       setPatients(response.data);
     } catch (error) {
       console.error("Error fetching patients:", error);
@@ -35,10 +37,13 @@ const PatientRecordsPage = () => {
 
   const handleApproval = async (id, isApproved) => {
     try {
-      await axios.put("http://localhost:5000/api/Allpatients/approval", {
-        id,
-        isApproved,
-      });
+      await axios.put(
+        "https://midlink-of4r.onrender.com/api/Allpatients/approval",
+        {
+          id,
+          isApproved,
+        },
+      );
       setPatients(
         patients.map((patient) =>
           patient.id === id ? { ...patient, is_approved: isApproved } : patient,

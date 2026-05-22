@@ -52,7 +52,7 @@ const Comment = ({
         <img
           src={
             comment.profile_image
-              ? `http://localhost:5000/${comment.profile_image}`
+              ? `https://midlink-of4r.onrender.com/${comment.profile_image}`
               : "/default-avatar.png"
           }
           alt="Profile"
@@ -197,17 +197,20 @@ const Comment = ({
 
 Comment.propTypes = {
   comment: PropTypes.shape({
-    comment_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    comment_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     comment_text: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
     profile_image: PropTypes.string,
-    patient_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    patient_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
     replies: PropTypes.array,
   }).isRequired,
   addReply: PropTypes.func.isRequired,
   updateComment: PropTypes.func.isRequired,
   deleteComment: PropTypes.func.isRequired,
-  currentUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  currentUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
 };
 
 const CommentSection = ({
@@ -295,7 +298,8 @@ CommentSection.propTypes = {
   addComment: PropTypes.func.isRequired,
   updateComment: PropTypes.func.isRequired,
   deleteComment: PropTypes.func.isRequired,
-  currentUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  currentUserId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
 };
 
 export default CommentSection;

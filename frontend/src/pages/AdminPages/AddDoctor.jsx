@@ -83,7 +83,8 @@ const AddDoctor = ({ onAddDoctor }) => {
     }
 
     try {
-      const registerUrl = "http://localhost:5000/api/doctors/register";
+      const registerUrl =
+        "https://midlink-of4r.onrender.com/api/doctors/register";
 
       const response = await axios.post(registerUrl, data, {
         headers: { "Content-Type": "multipart/form-data" },

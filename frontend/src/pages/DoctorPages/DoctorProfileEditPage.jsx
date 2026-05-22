@@ -112,7 +112,8 @@ const DoctorProfileEditPage = () => {
 
   const getCurrentImageUrl = () => {
     if (localImageUrl) return localImageUrl;
-    if (profileImage) return `http://localhost:5000/${profileImage}`;
+    if (profileImage)
+      return `https://midlink-of4r.onrender.com/${profileImage}`;
     return "https://via.placeholder.com/150";
   };
 
@@ -197,7 +198,7 @@ const DoctorProfileEditPage = () => {
                 {cvPath ? (
                   <div className="space-y-3">
                     <a
-                      href={`http://localhost:5000/${cvPath}`}
+                      href={`https://midlink-of4r.onrender.com/${cvPath}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 bg-white/5 hover:bg-white/10 text-white text-sm px-4 py-3 rounded-xl transition-colors w-full border border-white/5"
