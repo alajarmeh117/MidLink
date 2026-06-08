@@ -77,8 +77,8 @@ exports.login = async (req, res) => {
 
     res.cookie(tokenName, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true, // إجباري يكون true لأننا بنتعامل مع سيرفرات Render المشفرة (HTTPS)
+      sameSite: "none", // هاد هو السحر اللي بيسمح للمتصفح ينقل الـ Cookie من Render لـ Localhost
       maxAge: 3600000, // 1 hour
     });
 
