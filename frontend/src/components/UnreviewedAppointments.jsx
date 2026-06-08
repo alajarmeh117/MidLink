@@ -25,7 +25,7 @@ const UnreviewedAppointments = () => {
       for (const appointment of appointments) {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/appointment/doctor/${appointment.appointment_id}`,
+            `https://midlink-backend.onrender.com/api/appointment/doctor/${appointment.appointment_id}`,
           );
           doctorNames[appointment.appointment_id] = response.data.staff_name;
         } catch (error) {

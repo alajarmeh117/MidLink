@@ -21,7 +21,7 @@ const DoctorLayout = () => {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/notification/notifications",
+        "https://midlink-backend.onrender.com/api/notification/notifications",
       );
       setNotifications(response.data);
     } catch (error) {
@@ -34,7 +34,7 @@ const DoctorLayout = () => {
     if (isAuthenticated && user) {
       fetchNotifications(); // جلب أولي
 
-      const socket = io("http://localhost:5000");
+      const socket = io("https://midlink-backend.onrender.com");
 
       // إدخال الدكتور لغرفته الخاصة بناءً على الـ ID تبعه
       const userId = user.staff_id || user.id;
@@ -68,7 +68,7 @@ const DoctorLayout = () => {
   const handleNotificationClick = async (notif) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/notification/notifications/${notif.id}/read`,
+        `https://midlink-backend.onrender.com/api/notification/notifications/${notif.id}/read`,
       );
       fetchNotifications();
       setIsNotifOpen(false);
@@ -174,7 +174,7 @@ const DoctorLayout = () => {
               <img
                 src={
                   user?.profile_image
-                    ? `http://localhost:5000/${user.profile_image}`
+                    ? `https://midlink-backend.onrender.com/${user.profile_image}`
                     : "https://via.placeholder.com/40"
                 }
                 alt="Doctor Profile"

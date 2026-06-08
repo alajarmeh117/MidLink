@@ -7,7 +7,7 @@ export const sendMessage = createAsyncThunk(
   async (messageData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/messages",
+        "https://midlink-backend.onrender.com/api/messages",
         messageData,
       );
       return response.data;

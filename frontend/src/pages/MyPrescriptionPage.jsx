@@ -194,7 +194,7 @@ export default function MyPrescriptionPage() {
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/patients/profile",
+        "https://midlink-backend.onrender.com/api/patients/profile",
       );
       setPatientName(`${response.data.username}`);
     } catch (err) {
@@ -206,7 +206,7 @@ export default function MyPrescriptionPage() {
   const fetchPrescriptions = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/prescription",
+        "https://midlink-backend.onrender.com/api/prescription",
       );
       setPrescriptions(response.data);
     } catch (err) {

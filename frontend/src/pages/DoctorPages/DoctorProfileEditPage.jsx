@@ -58,7 +58,9 @@ const DoctorProfileEditPage = () => {
       setClinicAddress(profile.clinic_address || ""); // 🔥 جلب العنوان إن وُجد
       setCvPath(profile.cv || "");
       if (profile.profile_image) {
-        setLocalImageUrl(`http://localhost:5000/${profile.profile_image}`);
+        setLocalImageUrl(
+          `https://midlink-backend.onrender.com/${profile.profile_image}`,
+        );
       }
     }
   }, [profile]);
@@ -192,7 +194,7 @@ const DoctorProfileEditPage = () => {
               {cvPath ? (
                 <div className="flex flex-col gap-3">
                   <a
-                    href={`http://localhost:5000/${cvPath}`}
+                    href={`https://midlink-backend.onrender.com/${cvPath}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full py-2.5 bg-slate-100 text-[#0f4c5c] rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors"

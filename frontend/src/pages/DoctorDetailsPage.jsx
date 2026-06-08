@@ -71,10 +71,13 @@ const ContactDoctorModal = ({ isOpen, onClose, doctor }) => {
 
   const handleSend = useCallback(async () => {
     try {
-      await axios.post("http://localhost:5000/api/contact-doctor", {
-        doctorId: doctor.staff_id,
-        message,
-      });
+      await axios.post(
+        "https://midlink-backend.onrender.com/api/contact-doctor",
+        {
+          doctorId: doctor.staff_id,
+          message,
+        },
+      );
       onClose();
       Swal.fire({
         title: "Message Sent!",
@@ -226,7 +229,9 @@ const DoctorProfilePage = () => {
 
   const fetchDoctor = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/doctors/${id}`);
+      const response = await fetch(
+        `https://midlink-backend.onrender.com/api/doctors/${id}`,
+      );
       const data = await response.json();
       setDoctor(data);
     } catch (error) {
@@ -237,7 +242,7 @@ const DoctorProfilePage = () => {
   const fetchRating = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/appointment/doctor/${id}/rating`,
+        `https://midlink-backend.onrender.com/api/appointment/doctor/${id}/rating`,
       );
       setRating(response.data);
     } catch (error) {
@@ -248,7 +253,7 @@ const DoctorProfilePage = () => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/comment/doctors/${id}/comments`,
+        `https://midlink-backend.onrender.com/api/comment/doctors/${id}/comments`,
       );
       setComments(response.data);
     } catch (error) {
@@ -259,7 +264,7 @@ const DoctorProfilePage = () => {
   const fetchCurrentUser = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/patients/profile",
+        "https://midlink-backend.onrender.com/api/patients/profile",
         {
           withCredentials: true,
         },
@@ -273,7 +278,7 @@ const DoctorProfilePage = () => {
   const addComment = async (commentText, parentCommentId = null) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/comment/doctors/comments",
+        "https://midlink-backend.onrender.com/api/comment/doctors/comments",
         {
           doctor_id: id,
           parent_comment_id: parentCommentId,
@@ -290,7 +295,7 @@ const DoctorProfilePage = () => {
   const updateComment = async (commentId, newText) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/comment/doctors/comments/${commentId}`,
+        `https://midlink-backend.onrender.com/api/comment/doctors/comments/${commentId}`,
         { comment_text: newText },
         { withCredentials: true },
       );
@@ -307,7 +312,7 @@ const DoctorProfilePage = () => {
   const deleteComment = async (commentId) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/comment/doctors/comments/${commentId}`,
+        `https://midlink-backend.onrender.com/api/comment/doctors/comments/${commentId}`,
         {
           withCredentials: true,
         },
@@ -368,7 +373,7 @@ const DoctorProfilePage = () => {
                   className="w-full h-full object-cover rounded-full border-8 border-white shadow-2xl relative z-10"
                   src={
                     doctor.profile_image
-                      ? `http://localhost:5000/${doctor.profile_image}`
+                      ? `https://midlink-backend.onrender.com/${doctor.profile_image}`
                       : "https://via.placeholder.com/150"
                   }
                   alt={doctor.staff_name}

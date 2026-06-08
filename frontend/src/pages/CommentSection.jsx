@@ -52,7 +52,7 @@ const Comment = ({
         <img
           src={
             comment.profile_image
-              ? `http://localhost:5000/${comment.profile_image}`
+              ? `https://midlink-backend.onrender.com/${comment.profile_image}`
               : "/default-avatar.png"
           }
           alt="Profile"

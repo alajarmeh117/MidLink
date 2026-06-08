@@ -71,7 +71,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
   const fetchAvailableSlots = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/appointment/doctors/${doctor.staff_id}/available-slots`,
+        `https://midlink-backend.onrender.com/api/appointment/doctors/${doctor.staff_id}/available-slots`,
         { withCredentials: true },
       );
       setAllSlots(response.data);
@@ -86,7 +86,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
   const handleJoinWaitingList = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/appointment/doctors/${doctor.staff_id}/waiting-list`,
+        `https://midlink-backend.onrender.com/api/appointment/doctors/${doctor.staff_id}/waiting-list`,
         {},
         { withCredentials: true },
       );
@@ -129,7 +129,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/appointment/appointments",
+        "https://midlink-backend.onrender.com/api/appointment/appointments",
         {
           available_id: selectedSlot,
           appointment_type: appointmentType,
@@ -173,7 +173,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
   const createOrder = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/payments/create-order",
+        "https://midlink-backend.onrender.com/api/payments/create-order",
         {
           amount: "20",
           appointmentId: appointmentId,
@@ -192,7 +192,7 @@ const AppointmentForm = ({ doctor, onClose }) => {
   const onApprove = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/payments/capture-order",
+        "https://midlink-backend.onrender.com/api/payments/capture-order",
         {
           orderId: data.orderID,
           appointmentId: appointmentId,

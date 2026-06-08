@@ -28,7 +28,7 @@ const AppointmentTable = () => {
   const fetchAppointments = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/AdminPatientAppointments",
+        "https://midlink-backend.onrender.com/api/AdminPatientAppointments",
       );
       setAppointments(response.data);
     } catch (error) {
@@ -65,7 +65,7 @@ const AppointmentTable = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/AdminPatientAppointments/cancel",
+        "https://midlink-backend.onrender.com/api/AdminPatientAppointments/cancel",
         {
           appointmentId: selectedAppointment.appointment_id,
           reason: cancelReason,

@@ -7,7 +7,7 @@ export const fetchUnreviewedAppointments = createAsyncThunk(
   "appointments/fetchUnreviewedAppointments",
   async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/appointment/unreviewed-appointments",
+      "https://midlink-backend.onrender.com/api/appointment/unreviewed-appointments",
     );
     return response.data;
   },

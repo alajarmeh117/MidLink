@@ -20,16 +20,16 @@ const Cards = () => {
     const fetchCounts = async () => {
       try {
         const patientResponse = await axios.get(
-          "http://localhost:5000/api/Allpatients/count",
+          "https://midlink-backend.onrender.com/api/Allpatients/count",
         );
         const doctorResponse = await axios.get(
-          "http://localhost:5000/api/admin/doctors/count",
+          "https://midlink-backend.onrender.com/api/admin/doctors/count",
         );
         const appointmentResponse = await axios.get(
-          "http://localhost:5000/api/AdminPatientAppointments/count",
+          "https://midlink-backend.onrender.com/api/AdminPatientAppointments/count",
         );
         const scheduleResponse = await axios.get(
-          "http://localhost:5000/api/schedules/count",
+          "https://midlink-backend.onrender.com/api/schedules/count",
         );
 
         setPatientCount(patientResponse.data.count);

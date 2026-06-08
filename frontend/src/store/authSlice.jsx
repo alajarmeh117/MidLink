@@ -15,7 +15,7 @@ export const signup = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/signup",
+        "https://midlink-backend.onrender.com/api/auth/signup",
         userData,
       );
       return response.data;
@@ -32,7 +32,7 @@ export const login = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://midlink-backend.onrender.com/api/auth/login",
         credentials,
         {
           withCredentials: true,
@@ -52,7 +52,7 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await axios.post(
-        "http://localhost:5000/api/auth/logout",
+        "https://midlink-backend.onrender.com/api/auth/logout",
         {},
         { withCredentials: true },
       );
@@ -72,7 +72,7 @@ export const checkAuthStatus = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/auth/status",
+        "https://midlink-backend.onrender.com/api/auth/status",
         {
           withCredentials: true,
         },
@@ -91,7 +91,7 @@ export const getProfile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/patients/profile",
+        "https://midlink-backend.onrender.com/api/patients/profile",
         {
           withCredentials: true,
         },
@@ -110,7 +110,7 @@ export const updateProfile = createAsyncThunk(
   async (profileData, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        "http://localhost:5000/api/patients/profile",
+        "https://midlink-backend.onrender.com/api/patients/profile",
         profileData,
         {
           withCredentials: true,
@@ -132,7 +132,7 @@ export const updateProfileImage = createAsyncThunk(
       const formData = new FormData();
       formData.append("profileImage", imageFile);
       const response = await axios.put(
-        "http://localhost:5000/api/patients/profile-image",
+        "https://midlink-backend.onrender.com/api/patients/profile-image",
         formData,
         {
           withCredentials: true,

@@ -44,7 +44,7 @@ const PatientProfile = () => {
     const fetchPatientProfile = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/patients/profile",
+          "https://midlink-backend.onrender.com/api/patients/profile",
           { withCredentials: true },
         );
         setPatientData(response.data);
@@ -100,7 +100,7 @@ const PatientProfile = () => {
     if (result.isConfirmed) {
       try {
         await axios.put(
-          `http://localhost:5000/api/appointment/appointments/${appointment.appointment_id || appointment.id}/cancel`,
+          `https://midlink-backend.onrender.com/api/appointment/appointments/${appointment.appointment_id || appointment.id}/cancel`,
           {},
           { withCredentials: true },
         );
@@ -377,7 +377,7 @@ const PatientProfile = () => {
               <img
                 src={
                   patientData.profile_image
-                    ? `http://localhost:5000/${patientData.profile_image}`
+                    ? `https://midlink-backend.onrender.com/${patientData.profile_image}`
                     : "/default-avatar.png"
                 }
                 alt="Profile"

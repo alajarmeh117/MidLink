@@ -24,7 +24,9 @@ const OurDoctorPage = () => {
 
   const fetchDoctors = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/doctors");
+      const response = await fetch(
+        "https://midlink-backend.onrender.com/api/doctors",
+      );
       const data = await response.json();
       setDoctors(data);
       const uniqueSpecialties = [
@@ -172,7 +174,7 @@ const OurDoctorPage = () => {
                       <img
                         src={
                           doctor.profile_image
-                            ? `http://localhost:5000/${doctor.profile_image}`
+                            ? `https://midlink-backend.onrender.com/${doctor.profile_image}`
                             : "https://via.placeholder.com/150"
                         }
                         alt={doctor.staff_name}

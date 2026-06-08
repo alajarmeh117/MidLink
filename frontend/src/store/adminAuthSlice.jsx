@@ -6,7 +6,7 @@ export const loginAdmin = createAsyncThunk(
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/admin/login",
+        "https://midlink-backend.onrender.com/api/admin/login",
         { email, password },
         { withCredentials: true },
       );
@@ -22,7 +22,7 @@ export const logoutAdmin = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/admin/logout",
+        "https://midlink-backend.onrender.com/api/admin/logout",
         {},
         { withCredentials: true },
       );
@@ -76,7 +76,7 @@ export default adminAuthSlice.reducer;
 //   async ({ email, password }, { rejectWithValue }) => {
 //     try {
 //       const response = await axios.post(
-//         'http://localhost:5000/api/admin/login',
+//         'https://midlink-backend.onrender.com/api/admin/login',
 //         { email, password },
 //         { withCredentials: true }
 //       );

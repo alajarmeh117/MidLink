@@ -24,7 +24,7 @@ export default function AdminPrescription() {
     setError(null);
     try {
       const response = await fetch(
-        "http://localhost:5000/api/admin/Prescription/prescriptions",
+        "https://midlink-backend.onrender.com/api/admin/Prescription/prescriptions",
       );
       if (!response.ok) {
         throw new Error("Failed to fetch prescriptions");

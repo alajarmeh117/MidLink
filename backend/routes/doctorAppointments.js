@@ -28,7 +28,7 @@ module.exports = router;
 
 //?postman ...
 //TODOO ...... doctorAvailability .... POST ...
-//*http://localhost:5000/api/doctor/set-availability
+//*https://midlink-backend.onrender.com/api/doctor/set-availability
 // {
 //   "availableStartDate": "2024-09-21",
 //   "availableEndDate": "2024-09-28",
@@ -38,19 +38,19 @@ module.exports = router;
 // }
 
 //TODOO ...... getAvailability .... GET ...
-//* http://localhost:5000/api/doctor/availabilities/:staffId
+//* https://midlink-backend.onrender.com/api/doctor/availabilities/:staffId
 
 //TODOO ...... getAllAppointments .... GET ...
-//* http://localhost:5000/api/doctor/appointments
+//* https://midlink-backend.onrender.com/api/doctor/appointments
 
 //TODOO ...... getTodayAppointments .... GET ...
-//* http://localhost:5000/api/doctor/today-appointments
+//* https://midlink-backend.onrender.com/api/doctor/today-appointments
 
 //TODOO ...... addRecord .... post ...
-//* http://localhost:5000/api/doctor/add-record
+//* https://midlink-backend.onrender.com/api/doctor/add-record
 
 //TODOO ...... getRecords .... GET ...
-//* http://localhost:5000/api/doctor/patient-records
+//* https://midlink-backend.onrender.com/api/doctor/patient-records
 
 //--add doctor
 // INSERT INTO medical_staff (staff_name, email, password, profile_image, specialty, bio, is_approved)
