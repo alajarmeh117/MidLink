@@ -49,7 +49,8 @@ function App() {
       <PayPalScriptProvider
         options={{
           "client-id":
-            "ARR2OFHKxlw9M9u41SWGQF-7LLJRVoAhl6f-9E5jpJsDW-JBXp5eEMrFj9H7TY4d403eWXjKBupQcr-5",
+            "BAAtVaVrGAbMYeDzF0WEcQ8B5rOreDqnEovwC_hWbarFWYvS30LNHNo09HIfzRxSw1LoHoe5GSsxiHGR7A",
+          intent: "capture",
         }}
       >
         <Routes>

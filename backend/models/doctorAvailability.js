@@ -17,13 +17,14 @@ const generateTimeSlots = (startTime, endTime) => {
 };
 
 const DoctorAvailability = {
-  // 🔥 1. إضافة المواعيد (الإضافة الذكية المضادة للانهيار)
+  // 🔥 1. إضافة المواعيد (تم إضافة slotType لاستقبال النوع من الكنترولر)
   setAvailability: async (
     staffId,
     availableStartDate,
     availableEndDate,
     startTime,
     endTime,
+    slotType, // 👈 استقبلنا نوع الدوام
   ) => {
     const start = new Date(availableStartDate);
     const end = availableEndDate
@@ -53,25 +54,25 @@ const DoctorAvailability = {
         if (checkRes.rows.length > 0) {
           const existingSlot = checkRes.rows[0];
           if (existingSlot.is_deleted) {
-            // 🧟‍♂️ إحياء الموعد المحذوف (تم تعديل الأرقام لـ $1 و $2)
+            // 🧟‍♂️ إحياء الموعد المحذوف مع تحديث نوعه الجديد
             const updateQuery = `
               UPDATE doctor_availability 
-              SET is_deleted = FALSE, is_booked = FALSE, available_end_time = $1
+              SET is_deleted = FALSE, is_booked = FALSE, available_end_time = $1, slot_type = $3
               WHERE available_id = $2 RETURNING *
             `;
             const result = await db.query(updateQuery, [
               slot.end,
               existingSlot.available_id,
+              slotType || "ONLINE", // 👈 تحديث النوع
             ]);
             insertedRows.push(result.rows[0]);
           }
-          // 🟢 إذا مش محذوف (موجود أصلاً)، بنطنشه بدون ما نضرب إيرور!
         } else {
-          // 🆕 موعد جديد كلياً
+          // 🆕 موعد جديد كلياً (تم إضافة slot_type لجملة الإدخال)
           const insertQuery = `
             INSERT INTO doctor_availability
-            (staff_id, available_start_date, available_end_date, available_start_time, available_end_time, is_deleted, is_booked)
-            VALUES ($1, $2, NULL, $3, $4, FALSE, FALSE)
+            (staff_id, available_start_date, available_end_date, available_start_time, available_end_time, is_deleted, is_booked, slot_type)
+            VALUES ($1, $2, NULL, $3, $4, FALSE, FALSE, $5)
             RETURNING *
           `;
           const result = await db.query(insertQuery, [
@@ -79,6 +80,7 @@ const DoctorAvailability = {
             currentDateStr,
             slot.start,
             slot.end,
+            slotType || "ONLINE", // 👈 إدخال النوع
           ]);
           insertedRows.push(result.rows[0]);
         }
@@ -87,12 +89,10 @@ const DoctorAvailability = {
     return insertedRows;
   },
 
-  // (حذفنا دالة checkAvailabilityConflict لأنها بطل إلها داعي)
-
-  // 3. جلب المواعيد
+  // 3. جلب المواعيد (تم إضافة جلب عمود slot_type ليرسل للفرونت-إند)
   getDoctorAvailabilities: async (staffId) => {
     const query = `
-      SELECT da.available_id, ms.staff_name, da.available_start_date, da.available_start_time, da.available_end_time, da.is_booked
+      SELECT da.available_id, ms.staff_name, da.available_start_date, da.available_start_time, da.available_end_time, da.is_booked, da.slot_type
       FROM doctor_availability da
       JOIN medical_staff ms ON da.staff_id = ms.staff_id
       WHERE da.staff_id = $1 AND da.is_deleted = FALSE
@@ -104,7 +104,6 @@ const DoctorAvailability = {
 
   // 4. التحديث
   updateAvailability: async (availableId, staffId, updatedData) => {
-    // (محتوى التحديث القديم كما هو للحفاظ على استقرار النظام)
     const { availableStartDate, availableEndDate, startTime, endTime } =
       updatedData;
     const start = new Date(availableStartDate);

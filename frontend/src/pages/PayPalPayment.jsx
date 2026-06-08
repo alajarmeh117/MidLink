@@ -9,7 +9,7 @@ const PayPalPayment = ({}) => {
   const createOrder = async (data, actions) => {
     try {
       const response = await axios.post(
-        "https://midlink-of4r.onrender.com/api/payments/create-order",
+        "http://localhost:5000/api/payments/create-order",
         { amount },
       );
       return response.data.id; // This returns the PayPal order ID for approval
@@ -28,7 +28,7 @@ const PayPalPayment = ({}) => {
     // This will trigger once the user approves the payment on PayPal's side
     try {
       const response = await axios.post(
-        "https://midlink-of4r.onrender.com/api/payments/capture-order",
+        "http://localhost:5000/api/payments/capture-order",
         {
           orderId: data.orderID, // This is the PayPal order ID from approval
           userId,

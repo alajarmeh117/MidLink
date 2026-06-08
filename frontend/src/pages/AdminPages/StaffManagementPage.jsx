@@ -31,9 +31,7 @@ const StaffManagementPage = () => {
 
   const fetchStaff = async () => {
     try {
-      const response = await axios.get(
-        "https://midlink-of4r.onrender.com/api/admin/staff",
-      );
+      const response = await axios.get("http://localhost:5000/api/admin/staff");
       setStaff(response.data);
     } catch (error) {
       console.error("Error fetching staff:", error);
@@ -65,7 +63,7 @@ const StaffManagementPage = () => {
 
     try {
       await axios.put(
-        `https://midlink-of4r.onrender.com/api/admin/staff/${staffId}/approve`,
+        `http://localhost:5000/api/admin/staff/${staffId}/approve`,
         { isApproved },
       );
       Swal.fire({
@@ -186,7 +184,7 @@ const StaffManagementPage = () => {
               currentStaff.map((member) => {
                 const imageSrc =
                   member.profile_image && member.profile_image !== "null"
-                    ? `https://midlink-of4r.onrender.com/${member.profile_image}`
+                    ? `http://localhost:5000/${member.profile_image}`
                     : getDefaultAvatar(member.staff_name);
 
                 return (
@@ -252,7 +250,7 @@ const StaffManagementPage = () => {
                         {/* 🔥 كبسة عرض السيرة الذاتية (بتظهر بس إذا في CV) */}
                         {member.cv && member.cv !== "null" && (
                           <a
-                            href={`https://midlink-of4r.onrender.com/${member.cv}`}
+                            href={`http://localhost:5000/${member.cv}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="px-3 py-2 rounded-xl text-xs font-bold transition-all bg-[#e6f0f5] text-[#0f4c5c] hover:bg-[#2dd4bf] flex items-center gap-1"

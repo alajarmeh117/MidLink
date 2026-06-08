@@ -115,8 +115,6 @@ CREATE TABLE notifications (
     FOREIGN KEY (doctor_id) REFERENCES medical_staff(staff_id)
 );
 
-
-
 CREATE TABLE payments (
     payment_id SERIAL PRIMARY KEY,
     appointment_id BIGINT NOT NULL,
@@ -125,7 +123,6 @@ CREATE TABLE payments (
     payment_status VARCHAR(50) NOT NULL, 
     FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id)
 );
-
 
 CREATE TABLE reviews(
     review_id SERIAL PRIMARY KEY,

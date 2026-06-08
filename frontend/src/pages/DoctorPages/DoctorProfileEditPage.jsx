@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ArrowLeft,
   Camera,
@@ -12,6 +12,7 @@ import {
   FileText,
   Upload,
   ExternalLink,
+  MapPin, // 🔥 أيقونة الخريطة
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,14 +36,14 @@ const DoctorProfileEditPage = () => {
   const [password, setPassword] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [bio, setBio] = useState("");
+  const [clinicAddress, setClinicAddress] = useState(""); // 🔥 State لعنوان العيادة
   const [profileImage, setProfileImage] = useState(null);
   const [localImageUrl, setLocalImageUrl] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
   // CV states
-  const [cvPath, setCvPath] = useState(null);
-  const [newCvFile, setNewCvFile] = useState(null);
-  const [showCvUpload, setShowCvUpload] = useState(false);
+  const [cvPath, setCvPath] = useState("");
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     dispatch(getDoctorProfile());
@@ -54,315 +55,317 @@ const DoctorProfileEditPage = () => {
       setEmail(profile.email || "");
       setSpecialty(profile.specialty || "");
       setBio(profile.bio || "");
-      setProfileImage(profile.profile_image || null);
-      setCvPath(profile.cv || null);
+      setClinicAddress(profile.clinic_address || ""); // 🔥 جلب العنوان إن وُجد
+      setCvPath(profile.cv || "");
+      if (profile.profile_image) {
+        setLocalImageUrl(`http://localhost:5000/${profile.profile_image}`);
+      }
     }
   }, [profile]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(
-        updateDoctorProfile({
-          staff_name: name,
-          email,
-          password,
-          specialty,
-          bio,
-        }),
-      ).unwrap();
-      toast.success("Profile updated successfully");
-      setIsEditing(false);
-      setPassword("");
-    } catch (error) {
-      toast.error("Failed to update profile. Please try again later.");
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
     }
-  };
+  }, [error]);
 
-  const handleImageUpload = async (e) => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      try {
-        setLocalImageUrl(URL.createObjectURL(file));
-        const result = await dispatch(updateDoctorProfileImage(file)).unwrap();
-        setProfileImage(result.profile_image);
-        toast.success("Profile image updated successfully");
-      } catch {
-        toast.error("Failed to update profile image.");
-        setLocalImageUrl(null);
-      }
+      setProfileImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setLocalImageUrl(imageUrl);
+
+      const formData = new FormData();
+      formData.append("profileImage", file);
+      dispatch(updateDoctorProfileImage(formData));
     }
   };
 
-  const handleCvUpload = async () => {
-    if (!newCvFile) {
-      toast.error("Please select a PDF file first");
-      return;
-    }
-    try {
-      const result = await dispatch(updateDoctorCV(newCvFile)).unwrap();
-      setCvPath(result.cv);
-      setNewCvFile(null);
-      setShowCvUpload(false);
-      toast.success("CV updated successfully");
-    } catch {
-      toast.error("Failed to update CV. Please try again.");
+  const handleCVChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("cv", file);
+      dispatch(updateDoctorCV(formData))
+        .unwrap()
+        .then((res) => {
+          toast.success("CV uploaded successfully!");
+          setCvPath(res.cv);
+        })
+        .catch((err) => {
+          toast.error("Failed to upload CV");
+        });
     }
   };
 
-  const getCurrentImageUrl = () => {
-    if (localImageUrl) return localImageUrl;
-    if (profileImage)
-      return `https://midlink-of4r.onrender.com/${profileImage}`;
-    return "https://via.placeholder.com/150";
-  };
-
-  const getCvFileName = () => {
-    if (!cvPath) return null;
-    return cvPath.split("/").pop();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const updateData = {
+      staff_name: name,
+      email,
+      specialty,
+      bio,
+      clinic_address: clinicAddress, // 🔥 إرسال العنوان للباك-إند
+    };
+    if (password) {
+      updateData.password = password;
+    }
+    dispatch(updateDoctorProfile(updateData))
+      .unwrap()
+      .then(() => {
+        toast.success("Profile updated successfully!");
+        setPassword("");
+        setIsEditing(false);
+      })
+      .catch(() => {
+        toast.error("Failed to update profile.");
+      });
   };
 
   return (
-    <>
+    <div className="bg-[#f8fafc] font-sans min-h-screen pb-20">
       <ToastContainer position="top-right" autoClose={3000} />
-      <div className="min-h-full p-4 md:p-8 font-sans animate-[fadeIn_0.5s_ease-in-out]">
-        <div className="max-w-6xl mx-auto bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden flex flex-col md:flex-row min-h-[700px]">
-          {/* Left Sidebar (Profile Card) */}
-          <div className="bg-gradient-to-b from-[#0f4c5c] to-[#165a6c] p-8 md:w-80 lg:w-96 flex flex-col relative overflow-hidden">
-            {/* Decorative Background Elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#2dd4bf] rounded-full mix-blend-overlay filter blur-3xl opacity-20"></div>
 
-            {/* Back Button */}
-            <Link
-              to="/home"
-              className="text-teal-100 hover:text-white mb-8 inline-flex items-center gap-2 transition-colors w-fit relative z-10"
-            >
-              <ArrowLeft size={20} />{" "}
-              <span className="text-sm font-medium">Back to Dashboard</span>
-            </Link>
+      <div className="bg-[#0f4c5c] text-white pt-12 pb-32 px-4 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+        <div className="max-w-4xl mx-auto relative z-10">
+          <Link
+            to="/home"
+            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
+          >
+            <ArrowLeft size={20} /> Back to Dashboard
+          </Link>
+          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-2">
+            Profile Settings
+          </h1>
+          <p className="text-white/70">
+            Manage your personal details, clinic location, and credentials.
+          </p>
+        </div>
+      </div>
 
-            {/* Avatar Section */}
-            <div className="relative mb-6 mx-auto z-10">
-              <div className="w-40 h-40 rounded-full p-1.5 bg-gradient-to-br from-[#2dd4bf] to-transparent">
-                <img
-                  src={getCurrentImageUrl()}
-                  alt="Profile"
-                  className="w-full h-full rounded-full object-cover bg-white shadow-xl"
-                />
+      <div className="max-w-4xl mx-auto px-4 -mt-24 relative z-20">
+        <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row">
+          {/* Profile Sidebar */}
+          <div className="bg-slate-50 w-full md:w-1/3 p-8 flex flex-col items-center border-b md:border-b-0 md:border-r border-slate-100">
+            <div className="relative group mb-6">
+              <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
+                {localImageUrl ? (
+                  <img
+                    src={localImageUrl}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">
+                    <User size={64} />
+                  </div>
+                )}
               </div>
               <label
-                htmlFor="profile-image-upload"
-                className="absolute bottom-2 right-2 bg-[#2dd4bf] text-[#0f4c5c] p-3 rounded-full shadow-lg hover:scale-110 hover:bg-white transition-all cursor-pointer border-2 border-[#0f4c5c]"
+                htmlFor="profileImageInput"
+                className="absolute bottom-2 right-2 bg-[#2dd4bf] hover:bg-teal-400 text-[#0f4c5c] p-3 rounded-full cursor-pointer shadow-lg transition-transform hover:scale-110"
               >
-                <Camera size={18} />
+                <Camera size={20} />
               </label>
               <input
-                id="profile-image-upload"
                 type="file"
+                id="profileImageInput"
                 accept="image/*"
-                onChange={handleImageUpload}
                 className="hidden"
+                onChange={handleImageChange}
               />
             </div>
 
-            <div className="text-center mb-8 relative z-10">
-              <h2 className="text-2xl font-serif font-bold text-white mb-1">
-                {name || "Doctor Name"}
-              </h2>
-              <p className="text-[#2dd4bf] font-medium text-sm">
-                {specialty || "Specialty not set"}
-              </p>
-            </div>
+            <h2 className="text-xl font-bold text-[#0f4c5c] text-center mb-1">
+              Dr. {name || "Name"}
+            </h2>
+            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest text-center mb-8">
+              {specialty || "Specialty"}
+            </p>
 
-            {/* Action Toggle Button */}
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className={`w-full py-3 px-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 relative z-10 shadow-md hover:shadow-lg ${
-                isEditing
-                  ? "bg-white text-[#0f4c5c] hover:bg-slate-100"
-                  : "bg-[#2dd4bf] text-[#0f4c5c] hover:bg-teal-300"
-              }`}
-            >
-              {isEditing ? <Save size={18} /> : <PenTool size={18} />}
-              {isEditing ? "Cancel Editing" : "Edit Profile Info"}
-            </button>
-
-            {/* CV Section */}
-            <div className="mt-auto pt-8 relative z-10">
-              <div className="bg-black/10 rounded-2xl p-5 border border-white/10 backdrop-blur-sm">
-                <p className="text-white text-sm font-bold mb-3 flex items-center gap-2">
-                  <FileText size={16} className="text-[#2dd4bf]" />
-                  Curriculum Vitae
-                </p>
-
-                {cvPath ? (
-                  <div className="space-y-3">
-                    <a
-                      href={`https://midlink-of4r.onrender.com/${cvPath}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 bg-white/5 hover:bg-white/10 text-white text-sm px-4 py-3 rounded-xl transition-colors w-full border border-white/5"
-                    >
-                      <ExternalLink size={16} className="text-[#2dd4bf]" />
-                      <span className="truncate flex-1 text-left">
-                        {getCvFileName()}
-                      </span>
-                    </a>
-                    <button
-                      onClick={() => setShowCvUpload(!showCvUpload)}
-                      className="flex items-center justify-center gap-2 text-teal-100 hover:text-white text-xs w-full transition-colors font-medium"
-                    >
-                      <Upload size={14} />{" "}
-                      {showCvUpload ? "Cancel Upload" : "Update Document"}
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setShowCvUpload(!showCvUpload)}
-                    className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white text-sm px-4 py-3 rounded-xl transition-colors w-full border border-white/5"
+            <div className="w-full bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+              <h3 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                <FileText size={16} className="text-[#2dd4bf]" /> CV / Resume
+              </h3>
+              {cvPath ? (
+                <div className="flex flex-col gap-3">
+                  <a
+                    href={`http://localhost:5000/${cvPath}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-slate-100 text-[#0f4c5c] rounded-xl text-sm font-bold hover:bg-slate-200 transition-colors"
                   >
-                    <Upload size={16} className="text-[#2dd4bf]" />
-                    {showCvUpload ? "Cancel" : "Upload CV Document"}
+                    <ExternalLink size={16} /> View Current CV
+                  </a>
+                  <button
+                    onClick={() => fileInputRef.current.click()}
+                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#e6f0f5] text-[#0a7a8c] rounded-xl text-sm font-bold hover:bg-[#cbe2ee] transition-colors"
+                    disabled={cvLoading}
+                  >
+                    <Upload size={16} />{" "}
+                    {cvLoading ? "Uploading..." : "Upload New CV"}
                   </button>
-                )}
-
-                {/* CV Upload Dropzone */}
-                {showCvUpload && (
-                  <div className="mt-4 space-y-3 animate-[fadeIn_0.3s_ease-in-out]">
-                    <label className="flex flex-col items-center justify-center gap-2 cursor-pointer bg-black/20 border-2 border-dashed border-[#2dd4bf]/40 rounded-xl px-4 py-6 hover:border-[#2dd4bf] transition-colors group">
-                      <FileText
-                        size={24}
-                        className="text-teal-100 group-hover:text-white transition-colors"
-                      />
-                      <span className="text-xs text-teal-100 text-center px-2">
-                        {newCvFile ? newCvFile.name : "Click to select PDF"}
-                      </span>
-                      <input
-                        type="file"
-                        accept="application/pdf"
-                        onChange={(e) => setNewCvFile(e.target.files[0])}
-                        className="hidden"
-                      />
-                    </label>
-
-                    {newCvFile && (
-                      <button
-                        onClick={handleCvUpload}
-                        disabled={cvLoading}
-                        className="w-full py-3 bg-[#2dd4bf] text-[#0f4c5c] rounded-xl text-sm font-bold hover:bg-teal-300 transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-md"
-                      >
-                        {cvLoading ? (
-                          <span className="animate-spin inline-block w-4 h-4 border-2 border-[#0f4c5c] border-t-transparent rounded-full"></span>
-                        ) : (
-                          <Save size={16} />
-                        )}
-                        {cvLoading ? "Uploading..." : "Save Document"}
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => fileInputRef.current.click()}
+                  className="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-[#2dd4bf] text-[#0f4c5c] rounded-xl text-sm font-bold hover:bg-teal-50 transition-colors"
+                  disabled={cvLoading}
+                >
+                  <Upload size={16} />{" "}
+                  {cvLoading ? "Uploading..." : "Upload CV File"}
+                </button>
+              )}
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept=".pdf,.doc,.docx"
+                onChange={handleCVChange}
+              />
             </div>
           </div>
 
-          {/* Right Main Content (Form) */}
-          <div className="flex-1 p-8 lg:p-12 bg-white flex flex-col justify-center relative">
-            {/* Form Header */}
-            <div className="mb-8 border-b border-slate-100 pb-6">
-              <h1 className="text-3xl font-serif font-bold text-[#0f4c5c]">
-                Personal Information
-              </h1>
-              <p className="text-slate-500 mt-2">
-                Manage your professional details and how patients see you on
-                MidLink.
-              </p>
+          {/* Form Content */}
+          <div className="w-full md:w-2/3 p-8 md:p-12 bg-white relative">
+            <div className="flex justify-between items-center mb-8 border-b border-slate-100 pb-4">
+              <h3 className="text-2xl font-black text-[#0f4c5c]">
+                Personal Details
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsEditing(!isEditing)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-colors ${
+                  isEditing
+                    ? "bg-amber-100 text-amber-700"
+                    : "bg-[#e6f0f5] text-[#0a7a8c] hover:bg-[#cbe2ee]"
+                }`}
+              >
+                <PenTool size={16} /> {isEditing ? "Cancel Edit" : "Edit Info"}
+              </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Name Input */}
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-2">
-                    <User size={16} className="text-[#2dd4bf]" /> Full Name
+                  <label className="block text-sm font-bold text-slate-700 mb-2">
+                    Full Name
                   </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className={`w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#2dd4bf] focus:border-transparent outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
-                    placeholder="Enter full name"
-                    disabled={!isEditing}
-                  />
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <User className="text-[#2dd4bf]" size={18} />
+                    </div>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className={`w-full pl-11 p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#2dd4bf] outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
+                      disabled={!isEditing}
+                    />
+                  </div>
                 </div>
 
-                {/* Email Input */}
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-2">
-                    <Mail size={16} className="text-[#2dd4bf]" /> Email Address
+                  <label className="block text-sm font-bold text-slate-700 mb-2">
+                    Email Address
                   </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#2dd4bf] focus:border-transparent outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
-                    placeholder="doctor@midlink.com"
-                    disabled={!isEditing}
-                  />
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Mail className="text-[#2dd4bf]" size={18} />
+                    </div>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={`w-full pl-11 p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#2dd4bf] outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
+                      disabled={!isEditing}
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Specialty Input */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-2">
-                    <Stethoscope size={16} className="text-[#2dd4bf]" /> Medical
+                  <label className="block text-sm font-bold text-slate-700 mb-2">
                     Specialty
                   </label>
-                  <input
-                    type="text"
-                    value={specialty}
-                    onChange={(e) => setSpecialty(e.target.value)}
-                    className={`w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#2dd4bf] focus:border-transparent outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
-                    placeholder="e.g. Cardiologist"
-                    disabled={!isEditing}
-                  />
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Stethoscope className="text-[#2dd4bf]" size={18} />
+                    </div>
+                    <input
+                      type="text"
+                      value={specialty}
+                      onChange={(e) => setSpecialty(e.target.value)}
+                      className={`w-full pl-11 p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#2dd4bf] outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
+                      disabled={!isEditing}
+                    />
+                  </div>
                 </div>
 
-                {/* Password Input */}
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-2">
-                    <Key size={16} className="text-[#2dd4bf]" /> Security
-                    (Password)
+                  <label className="block text-sm font-bold text-slate-700 mb-2">
+                    New Password{" "}
+                    <span className="text-slate-400 font-normal">
+                      (Leave blank to keep current)
+                    </span>
                   </label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={`w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#2dd4bf] focus:border-transparent outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
-                    placeholder={
-                      isEditing ? "Enter new password..." : "••••••••"
-                    }
-                    disabled={!isEditing}
-                  />
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Key className="text-[#2dd4bf]" size={18} />
+                    </div>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={`w-full pl-11 p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#2dd4bf] outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
+                      placeholder="••••••••"
+                      disabled={!isEditing}
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Bio Input */}
-              <div>
-                <label className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-2">
-                  <BookOpen size={16} className="text-[#2dd4bf]" /> Professional
-                  Bio
+              {/* 🔥 حقل عنوان العيادة الجديد */}
+              <div className="mb-6">
+                <label className="block text-sm font-bold text-slate-700 mb-2">
+                  Clinic Location / Address
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <MapPin className="text-amber-500" size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    value={clinicAddress}
+                    onChange={(e) => setClinicAddress(e.target.value)}
+                    className={`w-full pl-11 p-3.5 bg-amber-50/30 border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
+                    placeholder="e.g., Abdali Hospital, Amman OR Google Maps Link..."
+                    disabled={!isEditing}
+                  />
+                </div>
+                <p className="text-xs text-slate-400 mt-2 font-medium">
+                  Enter your exact address to generate a map for your patients.
+                </p>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-bold text-slate-700 mb-2">
+                  Professional Biography
                 </label>
                 <textarea
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className={`w-full p-4 bg-slate-50 border border-slate-200 rounded-xl h-32 resize-none focus:ring-2 focus:ring-[#2dd4bf] focus:border-transparent outline-none transition-all ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
+                  rows="4"
+                  className={`w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#2dd4bf] outline-none transition-all resize-none ${!isEditing ? "opacity-60 cursor-not-allowed bg-slate-100" : ""}`}
                   placeholder="Write a short biography about your experience..."
                   disabled={!isEditing}
-                />
+                ></textarea>
               </div>
 
-              {/* Save Changes Button (Animated) */}
+              {/* Save Changes Button */}
               <div
                 className={`transition-all duration-500 overflow-hidden ${isEditing ? "max-h-24 opacity-100 mt-8" : "max-h-0 opacity-0 m-0"}`}
               >
@@ -385,7 +388,7 @@ const DoctorProfileEditPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

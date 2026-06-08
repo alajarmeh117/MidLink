@@ -23,7 +23,7 @@ const ResetPassword = () => {
     setError(null);
     try {
       const response = await axios.post(
-        `https://midlink-of4r.onrender.com/api/auth/reset-password/${id}/${token}`,
+        `http://localhost:5000/api/auth/reset-password/${id}/${token}`,
         { password },
       );
       setMessage(response.data.message);

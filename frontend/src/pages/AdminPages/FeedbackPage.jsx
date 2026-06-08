@@ -149,7 +149,7 @@ const FeedbackPage = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `https://midlink-of4r.onrender.com/api/contacts?page=${currentPage}&limit=${ITEMS_PER_PAGE}`,
+        `http://localhost:5000/api/contacts?page=${currentPage}&limit=${ITEMS_PER_PAGE}`,
       );
       setContacts(response.data);
     } catch (error) {
@@ -166,7 +166,7 @@ const FeedbackPage = () => {
   const fetchTotalContacts = useCallback(async () => {
     try {
       const response = await axios.get(
-        "https://midlink-of4r.onrender.com/api/contacts/messages/count",
+        "http://localhost:5000/api/contacts/messages/count",
       );
       setTotalContacts(response.data.count);
     } catch (error) {
@@ -201,13 +201,10 @@ const FeedbackPage = () => {
   const handleSendReply = useCallback(
     async (contactId, response) => {
       try {
-        await axios.put(
-          "https://midlink-of4r.onrender.com/api/contacts/respond",
-          {
-            contactId,
-            response,
-          },
-        );
+        await axios.put("http://localhost:5000/api/contacts/respond", {
+          contactId,
+          response,
+        });
         setIsModalOpen(false);
         fetchContacts();
         Swal.fire({

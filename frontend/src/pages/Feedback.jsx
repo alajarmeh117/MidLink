@@ -15,7 +15,7 @@ import {
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const API_BASE_URL = "https://midlink-of4r.onrender.com";
+const API_BASE_URL = "http://localhost:5000";
 
 const Feedback = () => {
   const [content, setContent] = useState("");

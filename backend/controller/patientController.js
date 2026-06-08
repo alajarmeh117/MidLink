@@ -17,10 +17,11 @@ exports.getProfile = async (req, res) => {
       WHERE p.id = $1
     `;
 
-    // 🔥 التعديل السحري: ضفنا أوقات البداية والنهاية عشان الفرونت-إند يقدر يشغل "الساعة الذكية"
+    // 🔥 التعديل السحري: ضفنا a.appointment_type عشان الواجهة تميز بين العيادة والأونلاين
     const appointmentQuery = `
       SELECT 
         a.appointment_id, 
+        a.appointment_type, -- 👈 الحلقة المفقودة تم إضافتها هنا!
         ms.staff_name AS doctor_name,
         da.available_start_date,
         da.available_start_time,

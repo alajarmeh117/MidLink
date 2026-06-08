@@ -33,12 +33,16 @@ exports.getAvailableSlots = async (req, res) => {
 };
 
 exports.bookAppointment = async (req, res) => {
-  const { available_id } = req.body;
+  // 🔥 تعديل: استقبلنا appointment_type من الفرونت-إند
+  const { available_id, appointment_type } = req.body;
   const patientId = req.user.id;
+
+  // تحديد القيمة الافتراضية إذا ما انبعثت
+  const type = appointment_type || "ONLINE";
+
   try {
     await db.query("BEGIN");
 
-    // 🔥 جلب بيانات الموعد للتأكد منه ولجلب ID الدكتور
     const slotCheck = await db.query(
       "SELECT * FROM doctor_availability WHERE available_id = $1 AND is_booked = FALSE AND is_deleted = FALSE",
       [available_id],
@@ -52,12 +56,12 @@ exports.bookAppointment = async (req, res) => {
       });
     }
 
-    // استخراج رقم الدكتور
     const doctorId = slotCheck.rows[0].staff_id;
 
+    // 🔥 تعديل: أضفنا appointment_type لجملة الـ INSERT
     const result = await db.query(
-      "INSERT INTO appointments (available_id, id, status) VALUES ($1, $2, $3) RETURNING appointment_id",
-      [available_id, patientId, "SCHEDULED"],
+      "INSERT INTO appointments (available_id, id, status, appointment_type) VALUES ($1, $2, $3, $4) RETURNING appointment_id",
+      [available_id, patientId, "SCHEDULED", type],
     );
 
     await db.query(
@@ -65,21 +69,21 @@ exports.bookAppointment = async (req, res) => {
       [available_id],
     );
 
-    // 🔥 1. إضافة إشعار الحجز للداتابيس
     const patientResult = await db.query(
       "SELECT username FROM patients WHERE id = $1",
       [patientId],
     );
     const patientName = patientResult.rows[0].username;
 
+    // 🔥 تعديل: توضيح نوع الحجز في الإشعار
+    const notificationMessage = `New ${type} appointment booked by ${patientName}`;
     await db.query(
       "INSERT INTO notifications (user_id, doctor_id, message) VALUES ($1, $2, $3)",
-      [patientId, doctorId, `New appointment booked by ${patientName}`],
+      [patientId, doctorId, notificationMessage],
     );
 
     await db.query("COMMIT");
 
-    // 🔥 2. إطلاق رنة السوكيت (Ping) للدكتور لايف!
     const io = req.app.get("io");
     if (io) {
       io.to(doctorId.toString()).emit("newNotification");

@@ -56,7 +56,7 @@ const AddPatient = () => {
 
     try {
       const response = await axios.post(
-        "https://midlink-of4r.onrender.com/api/patients",
+        "http://localhost:5000/api/patients",
         data,
         {
           headers: { "Content-Type": "multipart/form-data" },

@@ -31,7 +31,7 @@ const ReviewPopup = ({ onClose, appointmentId }) => {
     const fetchDoctorName = async () => {
       try {
         const response = await axios.get(
-          `https://midlink-of4r.onrender.com/api/appointment/doctor/${appointmentId}`,
+          `http://localhost:5000/api/appointment/doctor/${appointmentId}`,
         );
         setDoctorName(response.data.staff_name);
       } catch (error) {

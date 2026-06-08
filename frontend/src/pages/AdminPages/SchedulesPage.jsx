@@ -29,9 +29,7 @@ const SchedulesPage = () => {
 
   const fetchSchedules = async () => {
     try {
-      const response = await axios.get(
-        "https://midlink-of4r.onrender.com/api/schedules",
-      );
+      const response = await axios.get("http://localhost:5000/api/schedules");
       const formattedEvents = response.data.map((schedule) => {
         const startDate = moment
           .utc(
@@ -72,7 +70,7 @@ const SchedulesPage = () => {
 
     try {
       const response = await axios.get(
-        `https://midlink-of4r.onrender.com/api/schedules/date/${clickedDate}`,
+        `http://localhost:5000/api/schedules/date/${clickedDate}`,
       );
       const eventsOnDay = response.data.map((schedule) => {
         return {

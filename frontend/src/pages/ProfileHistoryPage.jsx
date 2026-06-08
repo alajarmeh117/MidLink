@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
-import Swal from "sweetalert2"; // 🔥 تأكد من وجود هذا السطر فوق مع الاستدعاءات
+import Swal from "sweetalert2";
 import {
   Download,
   Video,
@@ -12,6 +12,10 @@ import {
   User,
   Clock,
   X,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
 } from "lucide-react";
 import jsPDF from "jspdf";
 import { motion } from "framer-motion";
@@ -23,12 +27,16 @@ const PatientProfile = () => {
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // 🔥 محرك الوقت: يتحدث كل دقيقة لتغيير حالة الأزرار تلقائياً
   const [currentTime, setCurrentTime] = useState(new Date());
 
+  // 🔥 حالات الفلترة والتبويبات
+  const [activeTab, setActiveTab] = useState("UPCOMING"); // UPCOMING, PAST, CANCELLED
+  const [filterType, setFilterType] = useState("ALL"); // ALL, ONLINE, IN_CLINIC
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 60000); // تحديث كل دقيقة
+    const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
 
@@ -36,7 +44,7 @@ const PatientProfile = () => {
     const fetchPatientProfile = async () => {
       try {
         const response = await axios.get(
-          "https://midlink-of4r.onrender.com/api/patients/profile",
+          "http://localhost:5000/api/patients/profile",
           { withCredentials: true },
         );
         setPatientData(response.data);
@@ -50,8 +58,12 @@ const PatientProfile = () => {
     fetchPatientProfile();
   }, []);
 
+  // تصفير الصفحة عند تغيير التبويب أو الفلتر
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, filterType]);
+
   const handleCancelAppointment = async (appointment) => {
-    // 1. حساب الوقت المتبقي للموعد بدقة
     const d = new Date(appointment.available_start_date);
     const correctDateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const startDateTime = new Date(
@@ -59,7 +71,6 @@ const PatientProfile = () => {
     );
     const diffInHours = (startDateTime - currentTime) / (1000 * 60 * 60);
 
-    // الإعداد الافتراضي للإلغاء (أكثر من 24 ساعة) -> المنطقة الخضراء
     let alertConfig = {
       title: "Cancel Appointment?",
       text: "Are you sure you want to cancel this appointment? You will receive a full refund.",
@@ -68,7 +79,6 @@ const PatientProfile = () => {
       confirmButtonText: "Yes, cancel it!",
     };
 
-    // 🚨 قانون الـ 24 ساعة (أقل من 24 ساعة) -> المنطقة الحمراء
     if (diffInHours < 24) {
       alertConfig = {
         title: "Late Cancellation Warning!",
@@ -89,21 +99,17 @@ const PatientProfile = () => {
 
     if (result.isConfirmed) {
       try {
-        // إرسال طلب الإلغاء للباك-إند
         await axios.put(
-          `https://midlink-of4r.onrender.com/api/appointment/appointments/${appointment.appointment_id || appointment.id}/cancel`,
+          `http://localhost:5000/api/appointment/appointments/${appointment.appointment_id || appointment.id}/cancel`,
           {},
           { withCredentials: true },
         );
-
         await Swal.fire({
           icon: "success",
           title: "Cancelled",
           text: "Appointment has been cancelled successfully.",
           confirmButtonColor: "#0a7a8c",
         });
-
-        // تحديث الصفحة تلقائياً ليعكس التغيير فوراً
         window.location.reload();
       } catch (error) {
         Swal.fire({
@@ -118,7 +124,6 @@ const PatientProfile = () => {
     }
   };
 
-  // 🔥 دالة الذكاء الزمني لتحديد حالة الموعد وشكل الزر
   const getAppointmentState = (appointment) => {
     if (
       !appointment.available_start_date ||
@@ -128,36 +133,30 @@ const PatientProfile = () => {
         label: appointment.status,
         type: "default",
         showJoin: false,
+        showClinic: false,
         showPDF: appointment.status === "COMPLETED",
       };
     }
 
-    // 🌟 الحل الجذري لمشكلة التوقيت (Timezone)
     const d = new Date(appointment.available_start_date);
     const correctDateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-
     const startDateTime = new Date(
       `${correctDateStr}T${appointment.available_start_time}`,
     );
 
-    // حساب وقت النهاية (إذا الدكتور ما حدد وقت نهاية، بنعتبر الجلسة 30 دقيقة)
-    let endDateTime;
-    if (appointment.available_end_time) {
-      endDateTime = new Date(
-        `${correctDateStr}T${appointment.available_end_time}`,
-      );
-    } else {
-      endDateTime = new Date(startDateTime.getTime() + 30 * 60000);
-    }
+    let endDateTime = appointment.available_end_time
+      ? new Date(`${correctDateStr}T${appointment.available_end_time}`)
+      : new Date(startDateTime.getTime() + 30 * 60000);
 
     const diffInMinutes = (startDateTime - currentTime) / (1000 * 60);
+    const isClinic = appointment.appointment_type === "IN_CLINIC";
 
-    // 1. الموعد منتهي أو الدكتور خلصه
     if (appointment.is_done || appointment.status === "COMPLETED") {
       return {
         label: "Completed",
         type: "success",
         showJoin: false,
+        showClinic: false,
         showPDF: true,
       };
     }
@@ -166,38 +165,36 @@ const PatientProfile = () => {
         label: "Cancelled",
         type: "danger",
         showJoin: false,
+        showClinic: false,
         showPDF: false,
       };
     }
-
-    // 2. الوقت خلص والمريض ما حضر (راح عليه)
     if (currentTime > endDateTime) {
       return {
         label: "Expired",
         type: "danger",
         showJoin: false,
+        showClinic: false,
         showPDF: false,
       };
     }
-
-    // 3. الموعد هسا! (متبقي 15 دقيقة أو إحنا ضمن وقت الجلسة)
     if (diffInMinutes <= 15 && currentTime <= endDateTime) {
       return {
         label: "In Progress",
         type: "active",
-        showJoin: true,
+        showJoin: !isClinic,
+        showClinic: isClinic,
         showPDF: false,
       };
     }
-
-    // 4. الموعد لسه مطول (أكثر من 15 دقيقة)
     if (diffInMinutes > 15 && appointment.status !== "CANCELLED") {
       return {
         label: "Upcoming",
         type: "upcoming",
         showJoin: false,
+        showClinic: false,
         showPDF: false,
-        showCancel: true, // 🔥 ضفنا خيار الإلغاء
+        showCancel: true,
       };
     }
 
@@ -205,16 +202,15 @@ const PatientProfile = () => {
       label: appointment.status,
       type: "default",
       showJoin: false,
+      showClinic: false,
       showPDF: false,
     };
   };
 
-  const downloadAppointmentDetails = (index) => {
-    const appointment = patientData.appointments[index];
+  // 🔥 التعديل الآمن لطباعة الـ PDF بحيث يعتمد على الكائن وليس موقعه بالمصفوفة الحالية
+  const downloadAppointmentDetails = (appointment, originalIndex) => {
     const pdf = new jsPDF("p", "mm", "a4");
     const primaryColor = "#04333a";
-
-    // 🛠️ حل مشكلة التواريخ بالـ PDF بعد التعديل الأخير
     const formattedDate = appointment.available_start_date
       ? new Date(appointment.available_start_date).toLocaleDateString()
       : "N/A";
@@ -253,7 +249,8 @@ const PatientProfile = () => {
     pdf.setTextColor(50, 50, 50);
     pdf.text(`Attending Doctor: Dr. ${appointment.doctor_name}`, 25, 125);
     pdf.text(`Date & Time: ${formattedDate} at ${formattedTime}`, 25, 135);
-    pdf.text(`Status: ${appointment.status}`, 25, 145);
+    pdf.text(`Type: ${appointment.appointment_type || "ONLINE"}`, 25, 145);
+    pdf.text(`Status: ${appointment.status}`, 25, 155);
 
     pdf.setFontSize(10);
     pdf.setTextColor(150, 150, 150);
@@ -263,8 +260,56 @@ const PatientProfile = () => {
       285,
       { align: "center" },
     );
-    pdf.save(`MidLink_Record_${index + 1}.pdf`);
+
+    pdf.save(`MidLink_Record_${originalIndex + 1}.pdf`);
   };
+
+  // 🔥 معالجة وتصنيف المواعيد (Tabs & Filters)
+  const processedAppointments = useMemo(() => {
+    if (!patientData?.appointments)
+      return { upcoming: [], past: [], cancelled: [] };
+
+    const upcoming = [];
+    const past = [];
+    const cancelled = [];
+
+    patientData.appointments.forEach((app, index) => {
+      const state = getAppointmentState(app);
+      const appWithMeta = { ...app, originalIndex: index, state };
+
+      if (state.label === "Cancelled") {
+        cancelled.push(appWithMeta);
+      } else if (state.label === "Completed" || state.label === "Expired") {
+        past.push(appWithMeta);
+      } else {
+        upcoming.push(appWithMeta);
+      }
+    });
+
+    return { upcoming, past, cancelled };
+  }, [patientData, currentTime]);
+
+  // الحصول على المواعيد المعروضة حالياً وتطبيق الفلتر
+  const getCurrentList = () => {
+    let list = [];
+    if (activeTab === "UPCOMING") list = processedAppointments.upcoming;
+    else if (activeTab === "PAST") list = processedAppointments.past;
+    else if (activeTab === "CANCELLED") list = processedAppointments.cancelled;
+
+    if (filterType !== "ALL") {
+      list = list.filter(
+        (app) => (app.appointment_type || "ONLINE") === filterType,
+      );
+    }
+    return list;
+  };
+
+  const displayList = getCurrentList();
+  const totalPages = Math.ceil(displayList.length / itemsPerPage);
+  const paginatedList = displayList.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   if (loading)
     return (
@@ -316,14 +361,12 @@ const PatientProfile = () => {
   return (
     <div className="bg-[#f8fafc] font-sans min-h-screen">
       <Navbar />
-
       <div className="h-64 bg-gradient-to-r from-[#04333a] via-[#0a7a8c] to-[#04333a] relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
       </div>
 
       <div className="container mx-auto max-w-6xl px-4 -mt-32 relative z-10 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Profile Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -334,7 +377,7 @@ const PatientProfile = () => {
               <img
                 src={
                   patientData.profile_image
-                    ? `https://midlink-of4r.onrender.com/${patientData.profile_image}`
+                    ? `http://localhost:5000/${patientData.profile_image}`
                     : "/default-avatar.png"
                 }
                 alt="Profile"
@@ -366,20 +409,73 @@ const PatientProfile = () => {
             </div>
           </motion.div>
 
-          {/* History & Reviews */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
+            {/* 🔥 رفعنا التقييمات لفوق */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <UnreviewedAppointments />
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
               className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100"
             >
-              <h3 className="text-2xl font-extrabold text-[#04333a] mb-6 flex items-center gap-2">
-                <CalendarHeart className="text-[#58e6fc] w-8 h-8" /> Medical
-                History
-              </h3>
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h3 className="text-2xl font-extrabold text-[#04333a] flex items-center gap-2">
+                  <CalendarHeart className="text-[#58e6fc] w-8 h-8" />{" "}
+                  Appointments
+                </h3>
 
-              <div className="overflow-x-auto">
+                {/* الفلاتر */}
+                <div className="flex bg-gray-100 p-1 rounded-xl">
+                  {["ALL", "ONLINE", "IN_CLINIC"].map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setFilterType(type)}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${filterType === type ? "bg-white text-[#0a7a8c] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                    >
+                      {type === "IN_CLINIC"
+                        ? "Clinic"
+                        : type === "ALL"
+                          ? "All"
+                          : "Video"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* التبويبات */}
+              <div className="flex border-b border-gray-200 mb-4">
+                {[
+                  {
+                    id: "UPCOMING",
+                    label: `Upcoming (${processedAppointments.upcoming.length})`,
+                  },
+                  {
+                    id: "PAST",
+                    label: `Completed (${processedAppointments.past.length})`,
+                  },
+                  {
+                    id: "CANCELLED",
+                    label: `Cancelled (${processedAppointments.cancelled.length})`,
+                  },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`pb-3 px-4 font-bold text-sm transition-colors border-b-2 ${activeTab === tab.id ? "border-[#0a7a8c] text-[#0a7a8c]" : "border-transparent text-gray-400 hover:text-gray-600"}`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="overflow-x-auto min-h-[300px]">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b-2 border-gray-100">
@@ -390,26 +486,35 @@ const PatientProfile = () => {
                         Date & Time
                       </th>
                       <th className="p-4 text-sm font-bold text-gray-400 uppercase tracking-wider">
-                        Status & Action
+                        Action
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {patientData.appointments?.map((appointment, index) => {
-                      // 🔥 استدعاء دالة الذكاء الزمني لكل موعد
-                      const state = getAppointmentState(appointment);
-
+                    {paginatedList.map((appointment) => {
+                      const state = appointment.state; // أخذنا الحالة المحسوبة مسبقاً
                       return (
                         <motion.tr
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          transition={{ delay: 0.3 + index * 0.1 }}
-                          key={index}
+                          key={appointment.originalIndex}
                           className="border-b border-gray-50 hover:bg-[#f8fafc] transition-colors group"
                         >
                           <td className="p-4 font-bold text-[#04333a]">
-                            Dr. {appointment.doctor_name}
+                            <div className="flex flex-col gap-1 items-start">
+                              <span>Dr. {appointment.doctor_name}</span>
+                              {appointment.appointment_type === "IN_CLINIC" ? (
+                                <span className="bg-amber-100 text-amber-700 text-[10px] uppercase tracking-widest px-2 py-0.5 rounded flex items-center gap-1 w-fit">
+                                  <MapPin size={10} /> Clinic
+                                </span>
+                              ) : (
+                                <span className="bg-teal-100 text-teal-700 text-[10px] uppercase tracking-widest px-2 py-0.5 rounded flex items-center gap-1 w-fit">
+                                  <Video size={10} /> Online
+                                </span>
+                              )}
+                            </div>
                           </td>
+
                           <td className="p-4 text-sm font-medium text-gray-500">
                             <div className="flex flex-col">
                               <span className="text-[#04333a] font-bold">
@@ -433,22 +538,12 @@ const PatientProfile = () => {
                           </td>
                           <td className="p-4">
                             <div className="flex items-center justify-between gap-3">
-                              {/* شارة الحالة الديناميكية */}
                               <span
-                                className={`px-3 py-1.5 rounded-full text-xs font-bold inline-block shadow-sm ${
-                                  state.type === "success"
-                                    ? "bg-green-100 text-green-700"
-                                    : state.type === "danger"
-                                      ? "bg-red-100 text-red-700"
-                                      : state.type === "active"
-                                        ? "bg-blue-100 text-blue-700"
-                                        : "bg-gray-100 text-gray-600"
-                                }`}
+                                className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-sm whitespace-nowrap ${state.type === "success" ? "bg-green-100 text-green-700" : state.type === "danger" ? "bg-red-100 text-red-700" : state.type === "active" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600"}`}
                               >
                                 {state.label}
                               </span>
 
-                              {/* الأزرار الديناميكية */}
                               <div className="flex gap-2">
                                 {state.showJoin && (
                                   <button
@@ -458,33 +553,37 @@ const PatientProfile = () => {
                                         "_blank",
                                       )
                                     }
-                                    className="relative flex items-center gap-2 bg-[#2dd4bf] hover:bg-teal-400 text-[#04333a] px-4 py-2 rounded-xl text-sm font-black shadow-[0_0_15px_rgba(45,212,191,0.5)] transition-all hover:-translate-y-0.5 animate-pulse"
+                                    className="flex items-center gap-1 bg-[#2dd4bf] hover:bg-teal-400 text-[#04333a] px-3 py-1.5 rounded-xl text-sm font-black shadow-sm transition-all hover:-translate-y-0.5"
                                   >
-                                    <Video size={16} /> Join Call Now
+                                    <Video size={14} /> Join
                                   </button>
                                 )}
-
-                                {/* 🔥 هاد هو زر الإلغاء الجديد اللي بتضيفه هون بالظبط */}
+                                {state.showClinic && (
+                                  <span className="flex items-center gap-1 text-amber-600 font-bold text-xs bg-amber-50 px-2 py-1.5 rounded-xl border border-amber-100 whitespace-nowrap">
+                                    <MapPin size={12} /> Visit Clinic
+                                  </span>
+                                )}
                                 {state.showCancel && (
                                   <button
                                     onClick={() =>
                                       handleCancelAppointment(appointment)
                                     }
-                                    className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 shadow-sm border border-red-100"
+                                    className="flex items-center gap-1 bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
                                   >
-                                    <X size={16} /> Cancel
+                                    <X size={14} /> Cancel
                                   </button>
                                 )}
-
-                                {/* زر الـ PDF الحالي عندك */}
                                 {state.showPDF && (
                                   <button
                                     onClick={() =>
-                                      downloadAppointmentDetails(index)
+                                      downloadAppointmentDetails(
+                                        appointment,
+                                        appointment.originalIndex,
+                                      )
                                     }
-                                    className="flex items-center gap-2 bg-[#e6f0f5] hover:bg-[#c4f7ff] text-[#0a7a8c] px-4 py-2 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
+                                    className="flex items-center gap-1 bg-[#e6f0f5] hover:bg-[#c4f7ff] text-[#0a7a8c] px-3 py-1.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5"
                                   >
-                                    <Download size={16} /> PDF
+                                    <Download size={14} /> PDF
                                   </button>
                                 )}
                               </div>
@@ -495,21 +594,60 @@ const PatientProfile = () => {
                     })}
                   </tbody>
                 </table>
-                {(!patientData.appointments ||
-                  patientData.appointments.length === 0) && (
-                  <p className="text-center text-gray-400 py-8 font-medium">
-                    No medical history found.
-                  </p>
+
+                {paginatedList.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+                    <Filter size={48} className="mb-4 opacity-20" />
+                    <p className="font-medium">
+                      No appointments found in this category.
+                    </p>
+                  </div>
                 )}
               </div>
-            </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <UnreviewedAppointments />
+              {/* 🔥 Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between border-t border-gray-100 pt-4 mt-2">
+                  <p className="text-sm text-gray-500 font-medium">
+                    Showing{" "}
+                    <span className="text-[#04333a] font-bold">
+                      {(currentPage - 1) * itemsPerPage + 1}
+                    </span>{" "}
+                    to{" "}
+                    <span className="text-[#04333a] font-bold">
+                      {Math.min(currentPage * itemsPerPage, displayList.length)}
+                    </span>{" "}
+                    of{" "}
+                    <span className="text-[#04333a] font-bold">
+                      {displayList.length}
+                    </span>{" "}
+                    entries
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                      className="p-1 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+                    <span className="text-sm font-bold text-[#04333a] px-2 border-x border-gray-200">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                      className="p-1 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </motion.div>
           </div>
         </div>

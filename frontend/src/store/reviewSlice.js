@@ -8,7 +8,7 @@ export const submitReview = createAsyncThunk(
   "review/submit",
   async (reviewData) => {
     const response = await axios.post(
-      "https://midlink-of4r.onrender.com/api/appointment/submit-review",
+      "http://localhost:5000/api/appointment/submit-review",
       reviewData,
     );
     return response.data;

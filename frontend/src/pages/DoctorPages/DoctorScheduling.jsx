@@ -19,6 +19,8 @@ import {
   Info,
   CalendarCheck,
   History,
+  Video,
+  MapPin,
 } from "lucide-react";
 
 const DoctorScheduling = () => {
@@ -32,6 +34,7 @@ const DoctorScheduling = () => {
   const [endDate, setEndDate] = useState(null);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [slotType, setSlotType] = useState("ONLINE");
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
@@ -65,11 +68,30 @@ const DoctorScheduling = () => {
       return;
     }
 
+    // 🔥 بداية التعديل: التحقق من منطقية الوقت (Time Validation)
+    const [startHour, startMin] = startTime.split(":").map(Number);
+    const [endHour, endMin] = endTime.split(":").map(Number);
+
+    const startTotalMinutes = startHour * 60 + startMin;
+    const endTotalMinutes = endHour * 60 + endMin;
+
+    if (endTotalMinutes <= startTotalMinutes) {
+      Swal.fire({
+        title: "Invalid Time Range!",
+        text: "The End Time must be strictly after the Start Time.",
+        icon: "error",
+        confirmButtonColor: "#e3342f",
+      });
+      return; // يوقف العملية وما يبعث أي ريكويست للباك-إند
+    }
+    // 🔥 نهاية التعديل
+
     const availabilityData = {
       availableStartDate: formatDate(startDate),
       availableEndDate: endDate ? formatDate(endDate) : null,
       startTime,
       endTime,
+      slot_type: slotType,
     };
 
     try {
@@ -83,7 +105,6 @@ const DoctorScheduling = () => {
       });
       resetForm();
       setIsFormOpen(false);
-      // تحديث الداتا بعد الإضافة
       dispatch(getAvailabilities());
     } catch (error) {
       console.error("Error saving availability:", error);
@@ -111,7 +132,8 @@ const DoctorScheduling = () => {
               "success",
             );
             dispatch(getAvailabilities());
-          } catch (error) {
+          } catch (err) {
+            console.error(err);
             Swal.fire("Error", "Could not delete this slot.", "error");
           }
         }
@@ -130,7 +152,8 @@ const DoctorScheduling = () => {
           try {
             await dispatch(deleteAvailability(slot.available_id)).unwrap();
             dispatch(getAvailabilities());
-          } catch (error) {
+          } catch (err) {
+            console.error(err);
             Swal.fire("Error", "Could not delete this slot.", "error");
           }
         }
@@ -169,7 +192,7 @@ const DoctorScheduling = () => {
               "success",
             );
             dispatch(getAvailabilities());
-          } catch (error) {
+          } catch {
             Swal.fire("Error", "Failed to delete some slots.", "error");
             dispatch(getAvailabilities());
           }
@@ -203,7 +226,7 @@ const DoctorScheduling = () => {
               "success",
             );
             dispatch(getAvailabilities());
-          } catch (error) {
+          } catch {
             Swal.fire("Error", "Failed to delete some slots.", "error");
             dispatch(getAvailabilities());
           }
@@ -217,16 +240,16 @@ const DoctorScheduling = () => {
     setEndDate(null);
     setStartTime("");
     setEndTime("");
+    setSlotType("ONLINE");
   };
 
   const isPastDate = (date) => {
-    if (!date) return false; // 🛡️ حماية
+    if (!date) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return new Date(date) < today;
   };
 
-  // 🛡️ حماية فولاذية: استخراج الداتا بشكل آمن لمنع الكراش
   const getSafeAvailabilities = (data) => {
     if (!data) return [];
     if (Array.isArray(data)) return data.flat(Infinity).filter(Boolean);
@@ -237,12 +260,11 @@ const DoctorScheduling = () => {
 
   const safeList = getSafeAvailabilities(availabilities);
 
-  // 🌟 سحر التجميع
   const groupSchedulesByDate = (schedules) => {
     const grouped = schedules.reduce((acc, slot) => {
-      if (!slot || !slot.available_start_date) return acc; // 🛡️ حماية من الداتا الناقصة
+      if (!slot || !slot.available_start_date) return acc;
       const d = new Date(slot.available_start_date);
-      if (isNaN(d)) return acc; // 🛡️ حماية من التواريخ الخاطئة
+      if (isNaN(d)) return acc;
 
       const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
@@ -273,7 +295,6 @@ const DoctorScheduling = () => {
   return (
     <div className="p-4 md:p-8 font-sans pb-20 animate-[fadeIn_0.5s_ease-in-out]">
       <div className="max-w-5xl mx-auto space-y-8">
-        {/* Header Section */}
         <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
             <h1 className="text-3xl font-serif font-bold text-[#0f4c5c] mb-2 flex items-center gap-3">
@@ -295,7 +316,6 @@ const DoctorScheduling = () => {
           </button>
         </div>
 
-        {/* Info Box */}
         <div className="bg-teal-50 border border-teal-100 rounded-2xl p-5 flex gap-4 text-[#0f4c5c]">
           <Info className="shrink-0 text-[#2dd4bf] mt-0.5" size={24} />
           <div>
@@ -312,7 +332,6 @@ const DoctorScheduling = () => {
           </div>
         </div>
 
-        {/* 🌟 Active Schedules */}
         <div>
           <h2 className="text-xl font-bold text-[#0f4c5c] mb-6 flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-[#2dd4bf] animate-pulse"></span>
@@ -327,11 +346,17 @@ const DoctorScheduling = () => {
             <div className="space-y-6">
               {sortedActiveDates.map((dateStr) => {
                 const slots = groupedActive[dateStr];
-                // 🛡️ حماية أثناء الترتيب
                 slots.sort((a, b) =>
                   (a.available_start_time || "").localeCompare(
                     b.available_start_time || "",
                   ),
+                );
+
+                const onlineSlots = slots.filter(
+                  (s) => s.slot_type === "ONLINE" || !s.slot_type,
+                );
+                const inClinicSlots = slots.filter(
+                  (s) => s.slot_type === "IN_CLINIC",
                 );
 
                 return (
@@ -341,8 +366,7 @@ const DoctorScheduling = () => {
                   >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-teal-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
-                    {/* Date Header */}
-                    <div className="flex justify-between items-center mb-5 border-b border-slate-50 pb-4 relative z-10">
+                    <div className="flex justify-between items-center mb-6 border-b border-slate-50 pb-4 relative z-10">
                       <div className="flex items-center gap-4">
                         <div className="bg-teal-50 text-[#0f4c5c] p-3 rounded-2xl">
                           <Calendar size={24} />
@@ -369,62 +393,118 @@ const DoctorScheduling = () => {
                       </button>
                     </div>
 
-                    {/* 🎨 Time Chips Grid */}
-                    <div className="flex flex-wrap gap-3 relative z-10">
-                      {slots.map((slot) => {
-                        // 🛡️ حماية أثناء طباعة الوقت
-                        const timeDisplay = slot.available_start_time
-                          ? slot.available_start_time.slice(0, 5)
-                          : "--:--";
-                        return (
-                          <div
-                            key={slot.available_id || Math.random()}
-                            className={`border pl-4 pr-2 py-2 rounded-xl flex items-center gap-2 transition-colors ${
-                              slot.is_booked
-                                ? "bg-blue-600 border-blue-700 text-white shadow-md"
-                                : "bg-slate-50 border-slate-200 hover:border-[#2dd4bf] text-[#0f4c5c]"
-                            }`}
-                          >
-                            <Clock
-                              size={14}
-                              className={
-                                slot.is_booked
-                                  ? "text-blue-200"
-                                  : "text-[#2dd4bf]"
-                              }
-                            />
-                            <span className="font-bold text-sm tracking-wide">
-                              {timeDisplay}
-                            </span>
-
-                            {slot.is_booked && (
-                              <span className="text-[10px] uppercase font-black bg-white text-blue-600 px-1.5 py-0.5 rounded ml-1 shadow-sm">
-                                Booked
-                              </span>
-                            )}
-
-                            <div
-                              className={`w-px h-4 mx-1 ${slot.is_booked ? "bg-blue-400" : "bg-slate-200"}`}
-                            ></div>
-
-                            <button
-                              onClick={() => handleDeleteSingleSlot(slot)}
-                              className={`p-1.5 rounded-lg transition-colors ${
-                                slot.is_booked
-                                  ? "text-blue-200 hover:text-white hover:bg-red-500"
-                                  : "text-slate-400 hover:text-red-500 hover:bg-red-50"
-                              }`}
-                              title={
-                                slot.is_booked
-                                  ? "Cancel this appointment"
-                                  : "Delete this empty slot"
-                              }
-                            >
-                              <X size={14} />
-                            </button>
+                    <div className="relative z-10 flex flex-col gap-6">
+                      {inClinicSlots.length > 0 && (
+                        <div className="bg-amber-50/30 p-4 rounded-2xl border border-amber-100/50">
+                          <h4 className="text-sm font-black text-amber-700 mb-3 flex items-center gap-2 uppercase tracking-widest">
+                            <MapPin size={16} className="text-amber-500" />
+                            In-Clinic Visits
+                          </h4>
+                          <div className="flex flex-wrap gap-3">
+                            {inClinicSlots.map((slot) => {
+                              const timeDisplay = slot.available_start_time
+                                ? slot.available_start_time.slice(0, 5)
+                                : "--:--";
+                              return (
+                                <div
+                                  key={slot.available_id}
+                                  className={`border pl-4 pr-2 py-2 rounded-xl flex items-center gap-2 transition-colors ${
+                                    slot.is_booked
+                                      ? "bg-blue-600 border-blue-700 text-white shadow-md"
+                                      : "bg-white border-amber-200 hover:border-amber-400 text-amber-900"
+                                  }`}
+                                >
+                                  <Clock
+                                    size={14}
+                                    className={
+                                      slot.is_booked
+                                        ? "text-blue-200"
+                                        : "text-amber-500"
+                                    }
+                                  />
+                                  <span className="font-bold text-sm tracking-wide">
+                                    {timeDisplay}
+                                  </span>
+                                  {slot.is_booked && (
+                                    <span className="text-[10px] uppercase font-black bg-white text-blue-600 px-1.5 py-0.5 rounded ml-1 shadow-sm">
+                                      Booked
+                                    </span>
+                                  )}
+                                  <div
+                                    className={`w-px h-4 mx-1 ${slot.is_booked ? "bg-blue-400" : "bg-amber-100"}`}
+                                  ></div>
+                                  <button
+                                    onClick={() => handleDeleteSingleSlot(slot)}
+                                    className={`p-1.5 rounded-lg transition-colors ${
+                                      slot.is_booked
+                                        ? "text-blue-200 hover:text-white hover:bg-red-500"
+                                        : "text-amber-400 hover:text-red-500 hover:bg-red-50"
+                                    }`}
+                                  >
+                                    <X size={14} />
+                                  </button>
+                                </div>
+                              );
+                            })}
                           </div>
-                        );
-                      })}
+                        </div>
+                      )}
+
+                      {onlineSlots.length > 0 && (
+                        <div className="bg-teal-50/30 p-4 rounded-2xl border border-teal-100/50">
+                          <h4 className="text-sm font-black text-[#0f4c5c] mb-3 flex items-center gap-2 uppercase tracking-widest">
+                            <Video size={16} className="text-[#2dd4bf]" />
+                            Online Consultations
+                          </h4>
+                          <div className="flex flex-wrap gap-3">
+                            {onlineSlots.map((slot) => {
+                              const timeDisplay = slot.available_start_time
+                                ? slot.available_start_time.slice(0, 5)
+                                : "--:--";
+                              return (
+                                <div
+                                  key={slot.available_id}
+                                  className={`border pl-4 pr-2 py-2 rounded-xl flex items-center gap-2 transition-colors ${
+                                    slot.is_booked
+                                      ? "bg-blue-600 border-blue-700 text-white shadow-md"
+                                      : "bg-white border-teal-200 hover:border-[#2dd4bf] text-[#0f4c5c]"
+                                  }`}
+                                >
+                                  <Clock
+                                    size={14}
+                                    className={
+                                      slot.is_booked
+                                        ? "text-blue-200"
+                                        : "text-[#2dd4bf]"
+                                    }
+                                  />
+                                  <span className="font-bold text-sm tracking-wide">
+                                    {timeDisplay}
+                                  </span>
+                                  {slot.is_booked && (
+                                    <span className="text-[10px] uppercase font-black bg-white text-blue-600 px-1.5 py-0.5 rounded ml-1 shadow-sm">
+                                      Booked
+                                    </span>
+                                  )}
+                                  <div
+                                    className={`w-px h-4 mx-1 ${slot.is_booked ? "bg-blue-400" : "bg-teal-100"}`}
+                                  ></div>
+                                  <button
+                                    onClick={() => handleDeleteSingleSlot(slot)}
+                                    className={`p-1.5 rounded-lg transition-colors ${
+                                      slot.is_booked
+                                        ? "text-blue-200 hover:text-white hover:bg-red-500"
+                                        : "text-teal-400 hover:text-red-500 hover:bg-red-50"
+                                    }`}
+                                  >
+                                    <X size={14} />
+                                  </button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -440,7 +520,6 @@ const DoctorScheduling = () => {
           )}
         </div>
 
-        {/* 🌟 Past Schedules */}
         {sortedPastDates.length > 0 && (
           <div className="mt-12 opacity-70">
             <h2 className="text-lg font-bold text-slate-500 mb-6 flex items-center gap-2 border-t border-slate-200 pt-8">
@@ -511,6 +590,34 @@ const DoctorScheduling = () => {
             </div>
 
             <div className="p-8 space-y-6">
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-3">
+                  Session Type <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => setSlotType("ONLINE")}
+                    className={`py-3 rounded-xl border-2 font-bold flex items-center justify-center gap-2 transition-all ${
+                      slotType === "ONLINE"
+                        ? "border-[#0f4c5c] bg-[#e6f0f5] text-[#0f4c5c] shadow-sm"
+                        : "border-slate-200 text-slate-400 hover:border-slate-300"
+                    }`}
+                  >
+                    <Video size={18} /> Online Call
+                  </button>
+                  <button
+                    onClick={() => setSlotType("IN_CLINIC")}
+                    className={`py-3 rounded-xl border-2 font-bold flex items-center justify-center gap-2 transition-all ${
+                      slotType === "IN_CLINIC"
+                        ? "border-[#0f4c5c] bg-[#e6f0f5] text-[#0f4c5c] shadow-sm"
+                        : "border-slate-200 text-slate-400 hover:border-slate-300"
+                    }`}
+                  >
+                    <MapPin size={18} /> In-Clinic
+                  </button>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">
@@ -590,7 +697,6 @@ const DoctorScheduling = () => {
         </div>
       )}
 
-      {/* DatePicker Custom Styles Override */}
       <style>{`
         .react-datepicker-wrapper { display: block; width: 100%; }
         .react-datepicker { font-family: inherit; border: 1px solid #e2e8f0; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }

@@ -18,6 +18,7 @@ import {
   Sparkles,
   MessageSquareQuote,
   CheckCircle2,
+  MapPin,
 } from "lucide-react";
 import PropTypes from "prop-types";
 
@@ -70,7 +71,7 @@ const ContactDoctorModal = ({ isOpen, onClose, doctor }) => {
 
   const handleSend = useCallback(async () => {
     try {
-      await axios.post("https://midlink-of4r.onrender.com/api/contact-doctor", {
+      await axios.post("http://localhost:5000/api/contact-doctor", {
         doctorId: doctor.staff_id,
         message,
       });
@@ -225,9 +226,7 @@ const DoctorProfilePage = () => {
 
   const fetchDoctor = async () => {
     try {
-      const response = await fetch(
-        `https://midlink-of4r.onrender.com/api/doctors/${id}`,
-      );
+      const response = await fetch(`http://localhost:5000/api/doctors/${id}`);
       const data = await response.json();
       setDoctor(data);
     } catch (error) {
@@ -238,7 +237,7 @@ const DoctorProfilePage = () => {
   const fetchRating = async () => {
     try {
       const response = await axios.get(
-        `https://midlink-of4r.onrender.com/api/appointment/doctor/${id}/rating`,
+        `http://localhost:5000/api/appointment/doctor/${id}/rating`,
       );
       setRating(response.data);
     } catch (error) {
@@ -249,7 +248,7 @@ const DoctorProfilePage = () => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `https://midlink-of4r.onrender.com/api/comment/doctors/${id}/comments`,
+        `http://localhost:5000/api/comment/doctors/${id}/comments`,
       );
       setComments(response.data);
     } catch (error) {
@@ -260,7 +259,7 @@ const DoctorProfilePage = () => {
   const fetchCurrentUser = async () => {
     try {
       const response = await axios.get(
-        "https://midlink-of4r.onrender.com/api/patients/profile",
+        "http://localhost:5000/api/patients/profile",
         {
           withCredentials: true,
         },
@@ -274,7 +273,7 @@ const DoctorProfilePage = () => {
   const addComment = async (commentText, parentCommentId = null) => {
     try {
       const response = await axios.post(
-        "https://midlink-of4r.onrender.com/api/comment/doctors/comments",
+        "http://localhost:5000/api/comment/doctors/comments",
         {
           doctor_id: id,
           parent_comment_id: parentCommentId,
@@ -291,7 +290,7 @@ const DoctorProfilePage = () => {
   const updateComment = async (commentId, newText) => {
     try {
       await axios.put(
-        `https://midlink-of4r.onrender.com/api/comment/doctors/comments/${commentId}`,
+        `http://localhost:5000/api/comment/doctors/comments/${commentId}`,
         { comment_text: newText },
         { withCredentials: true },
       );
@@ -308,7 +307,7 @@ const DoctorProfilePage = () => {
   const deleteComment = async (commentId) => {
     try {
       await axios.delete(
-        `https://midlink-of4r.onrender.com/api/comment/doctors/comments/${commentId}`,
+        `http://localhost:5000/api/comment/doctors/comments/${commentId}`,
         {
           withCredentials: true,
         },
@@ -368,8 +367,9 @@ const DoctorProfilePage = () => {
                 <img
                   className="w-full h-full object-cover rounded-full border-8 border-white shadow-2xl relative z-10"
                   src={
-                    `https://midlink-of4r.onrender.com/${doctor.profile_image}` ||
-                    "https://via.placeholder.com/150"
+                    doctor.profile_image
+                      ? `http://localhost:5000/${doctor.profile_image}`
+                      : "https://via.placeholder.com/150"
                   }
                   alt={doctor.staff_name}
                   onError={(e) => {
@@ -410,12 +410,50 @@ const DoctorProfilePage = () => {
               <div className="mb-10 bg-gray-50 p-6 rounded-3xl border border-gray-100 relative">
                 <MessageSquareQuote className="absolute top-4 right-4 text-gray-200 w-10 h-10" />
                 <p className="text-gray-600 font-serif italic text-lg leading-relaxed relative z-10">
-                  "
+                  &ldquo;
                   {doctor.bio ||
                     "Dedicated healthcare professional committed to providing exceptional patient care and advancing medical practices."}
-                  "
+                  &rdquo;
                 </p>
               </div>
+
+              {/* 🗺️ Google Map Integration (عيادة الطبيب) */}
+              {doctor.clinic_address && (
+                <div className="mb-10 bg-gray-50 p-6 rounded-3xl border border-gray-200 shadow-sm relative overflow-hidden">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-[#04333a] font-black flex items-center gap-2 uppercase tracking-widest text-sm">
+                      <MapPin className="text-[#0a7a8c] w-5 h-5" /> Clinic
+                      Location
+                    </h4>
+                    {/* 🔥 زر عالمي يفتح تطبيق Google Maps للمريض */}
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(doctor.clinic_address)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-[#0a7a8c] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#04333a] transition-colors flex items-center gap-1 shadow-md"
+                    >
+                      Get Directions
+                    </a>
+                  </div>
+
+                  <div className="w-full h-56 rounded-2xl overflow-hidden shadow-inner border border-gray-200">
+                    <iframe
+                      title="Clinic Location"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                      allowFullScreen
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(doctor.clinic_address)}&t=m&z=15&output=embed&iwloc=near`}
+                    ></iframe>
+                  </div>
+
+                  <p className="text-sm text-gray-600 mt-4 font-bold px-2 flex items-start gap-2 leading-relaxed">
+                    <span className="w-2 h-2 mt-1.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
+                    {doctor.clinic_address}
+                  </p>
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">

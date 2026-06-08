@@ -94,20 +94,27 @@ const notifyWaitingList = async (staffId) => {
 
 const setAvailability = async (req, res) => {
   try {
-    const { availableStartDate, availableEndDate, startTime, endTime } =
-      req.body;
+    // 🔥 التعديل: استقبلنا slot_type من الواجهة
+    const {
+      availableStartDate,
+      availableEndDate,
+      startTime,
+      endTime,
+      slot_type,
+    } = req.body;
     const staffId = req.user.id;
 
     if (!staffId)
       return res.status(400).json({ message: "Staff ID is missing" });
 
-    // 🔥 لغينا فحص التعارض من هون، خلينا الموديل يتعامل بذكاء بدون إيرورات!
+    // 🔥 التعديل: مررنا slot_type للموديل
     const availability = await DoctorAvailability.setAvailability(
       staffId,
       availableStartDate,
       availableEndDate,
       startTime,
       endTime,
+      slot_type || "ONLINE", // تمرير النوع (والقيمة الافتراضية أونلاين للحماية)
     );
 
     notifyWaitingList(staffId).catch((err) => console.error(err));
@@ -122,27 +129,22 @@ const setAvailability = async (req, res) => {
       .json({ message: "Error setting availability", error: error.message });
   }
 };
-
 const getDoctorAvailabilities = async (req, res) => {
   try {
     const staffId = req.user.id;
     await DoctorAvailability.autoCompleteExpiredAppointments();
     const availabilities =
       await DoctorAvailability.getDoctorAvailabilities(staffId);
-    res
-      .status(200)
-      .json({
-        message: "Doctor availabilities retrieved successfully",
-        availabilities,
-      });
+    res.status(200).json({
+      message: "Doctor availabilities retrieved successfully",
+      availabilities,
+    });
   } catch (error) {
     console.error("Error getting doctor availabilities:", error);
-    res
-      .status(500)
-      .json({
-        message: "Error getting doctor availabilities",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error getting doctor availabilities",
+      error: error.message,
+    });
   }
 };
 
@@ -160,12 +162,10 @@ const updateAvailability = async (req, res) => {
       return res
         .status(404)
         .json({ message: "Availability not found or no permission" });
-    res
-      .status(200)
-      .json({
-        message: "Availability updated successfully",
-        availability: updatedAvailability,
-      });
+    res.status(200).json({
+      message: "Availability updated successfully",
+      availability: updatedAvailability,
+    });
   } catch (error) {
     res
       .status(500)
@@ -193,11 +193,9 @@ const deleteAvailability = async (req, res) => {
 
     if (!deletedAvailability) {
       await db.query("ROLLBACK");
-      return res
-        .status(404)
-        .json({
-          message: "Availability not found or you don't have permission",
-        });
+      return res.status(404).json({
+        message: "Availability not found or you don't have permission",
+      });
     }
 
     await db.query("COMMIT");
@@ -213,13 +211,11 @@ const deleteAvailability = async (req, res) => {
       });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Availability deleted successfully",
-        availability: deletedAvailability,
-        notifiedPatients: bookedPatients.length,
-      });
+    res.status(200).json({
+      message: "Availability deleted successfully",
+      availability: deletedAvailability,
+      notifiedPatients: bookedPatients.length,
+    });
   } catch (error) {
     await db.query("ROLLBACK");
     res

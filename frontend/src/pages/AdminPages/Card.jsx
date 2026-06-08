@@ -95,21 +95,15 @@ function ExpandedCard({ param, setExpanded }) {
       try {
         let response;
         if (param.type === "patient") {
-          response = await axios.get(
-            "https://midlink-of4r.onrender.com/api/Allpatients",
-          );
+          response = await axios.get("http://localhost:5000/api/Allpatients");
         } else if (param.type === "doctor") {
-          response = await axios.get(
-            "https://midlink-of4r.onrender.com/api/admin/staff",
-          );
+          response = await axios.get("http://localhost:5000/api/admin/staff");
         } else if (param.type === "appointment") {
           response = await axios.get(
-            "https://midlink-of4r.onrender.com/api/AdminPatientAppointments",
+            "http://localhost:5000/api/AdminPatientAppointments",
           );
         } else if (param.type === "schedule") {
-          response = await axios.get(
-            "https://midlink-of4r.onrender.com/api/schedules",
-          );
+          response = await axios.get("http://localhost:5000/api/schedules");
         }
         setData(response.data);
       } catch (error) {

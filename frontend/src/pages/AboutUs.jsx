@@ -1,15 +1,17 @@
 import { motion } from "framer-motion";
 import {
+  HeartPulse,
+  Users,
+  ShieldCheck,
+  Video,
+  MapPin,
+  Brain,
+  Sparkles,
+  Target,
+  Activity,
   Heart,
   Zap,
   Smile,
-  Users,
-  Shield,
-  Clock,
-  Video,
-  Sparkles,
-  Target,
-  Award,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -23,267 +25,230 @@ const AboutPage = () => {
 
   const features = [
     {
-      icon: <Shield className="h-8 w-8 text-[#58e6fc]" />,
-      title: "Verified Experts",
-      desc: "Every doctor is strictly verified by the JMA for your safety.",
+      icon: <Video className="h-8 w-8 text-[#2dd4bf]" />,
+      title: "Online Consultations",
+      desc: "High-definition, secure video calls allowing you to consult top specialists from the comfort of your home.",
     },
     {
-      icon: <Video className="h-8 w-8 text-[#a855f7]" />,
-      title: "Telemedicine",
-      desc: "High-definition secure video calls from the comfort of your home.",
+      icon: <MapPin className="h-8 w-8 text-amber-500" />,
+      title: "In-Clinic Navigation",
+      desc: "Direct Google Maps integration that guides you seamlessly to your doctor's physical clinic.",
     },
     {
-      icon: <Zap className="h-8 w-8 text-[#facc15]" />,
-      title: "AI Diagnosis",
-      desc: "Instant AI-powered specialty guidance based on your symptoms.",
+      icon: <Brain className="h-8 w-8 text-[#58e6fc]" />,
+      title: "AI Symptom Checker",
+      desc: "Intelligent triage system that accurately analyzes your symptoms and recommends the right specialty.",
     },
     {
-      icon: <Heart className="h-8 w-8 text-[#f43f5e]" />,
-      title: "Seamless Care",
-      desc: "Integrated health records and prescriptions at your fingertips.",
-    },
-    {
-      icon: <Clock className="h-8 w-8 text-[#22c55e]" />,
-      title: "Smart Queues",
-      desc: "Automatic waiting list alerts for your preferred time slots.",
-    },
-    {
-      icon: <Users className="h-8 w-8 text-[#6366f1]" />,
-      title: "Patient First",
-      desc: "Dedicated support team available 24/7 to assist your journey.",
+      icon: <ShieldCheck className="h-8 w-8 text-[#0a7a8c]" />,
+      title: "JMA Verified Experts",
+      desc: "Every doctor is strictly verified by the Jordan Medical Association to ensure top-tier medical safety.",
     },
   ];
 
   return (
-    <div className="bg-[#f8fafc] font-sans overflow-hidden">
+    <div className="bg-[#f8fafc] font-sans min-h-screen flex flex-col overflow-hidden">
       <Navbar />
 
-      {/* 🚀 Hero Section with Parallax Effect */}
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
-        <motion.div
-          initial={{ scale: 1.2 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.5 }}
-          className="absolute inset-0 z-0"
-        >
-          <img
-            src={bg}
-            alt="Healthcare Background"
-            className="w-full h-full object-cover opacity-80"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#04333a]/90 via-[#04333a]/70 to-[#f8fafc]" />
-        </motion.div>
+      {/* 🌟 Hero Section */}
+      <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden bg-gradient-to-br from-[#04333a] via-[#0a7a8c] to-[#0f4c5c]">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#2dd4bf] opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#f8fafc] to-transparent"></div>
 
-        <div className="relative z-10 text-center px-6">
+        <div className="container mx-auto px-6 max-w-6xl relative z-10 text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeInUp}>
-            <span className="bg-white/10 backdrop-blur-md border border-white/20 text-[#58e6fc] px-6 py-2 rounded-full text-sm font-bold tracking-widest uppercase mb-6 inline-block">
-              Since 2024 • Jordan's Pride
+            <span className="bg-white/10 border border-white/20 text-[#58e6fc] px-4 py-1.5 rounded-full text-sm font-bold tracking-widest uppercase mb-6 inline-flex items-center gap-2 backdrop-blur-sm">
+              <Sparkles size={16} /> Welcome to MidLink
             </span>
-            <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
-              Revolutionizing <br />{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#58e6fc] to-[#c4f7ff]">
-                Digital Health.
+            <h1 className="text-4xl md:text-6xl font-black text-white mb-6 font-serif tracking-tight leading-tight">
+              Bridging the Gap in <br className="hidden md:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2dd4bf] to-[#58e6fc]">
+                Modern Healthcare
               </span>
             </h1>
-            <p className="text-xl text-[#c4f7ff] max-w-2xl mx-auto font-medium opacity-90 leading-relaxed font-serif">
-              MidLink isn't just a platform; it's a movement to ensure every
-              Jordanian has instant access to world-class medical expertise.
+            <p className="text-lg md:text-xl text-blue-100/90 max-w-2xl mx-auto font-medium leading-relaxed">
+              We are not just a booking platform. MidLink is a complete hybrid
+              healthcare ecosystem designed to seamlessly connect patients and
+              doctors, online and offline.
             </p>
           </motion.div>
         </div>
       </section>
 
-      <main className="container mx-auto px-6 -mt-20 relative z-20 pb-24">
-        {/* 🎯 Mission & Vision Cards */}
-        <div className="grid md:grid-cols-2 gap-8 mb-24">
-          <motion.div
-            whileHover={{ y: -10 }}
-            className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 flex flex-col justify-between"
-          >
-            <div>
-              <div className="bg-[#e6f0f5] w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-                <Target className="text-[#04333a] w-8 h-8" />
-              </div>
-              <h2 className="text-3xl font-extrabold text-[#04333a] mb-6">
-                Our Mission
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-6 font-serif">
-                To eliminate the barriers between patients and doctors by
-                creating a seamless, transparent, and tech-driven healthcare
-                ecosystem that serves the entire kingdom.
-              </p>
-            </div>
-            <div className="flex items-center gap-2 text-[#0a7a8c] font-bold">
-              <Sparkles size={20} /> Leading Jordan's Vision 2030
-            </div>
-          </motion.div>
-
-          <motion.div
-            whileHover={{ y: -10 }}
-            className="bg-gradient-to-br from-[#04333a] to-[#0a7a8c] p-10 rounded-[2.5rem] shadow-2xl text-white"
-          >
-            <div className="bg-white/10 backdrop-blur-md w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
-              <Award className="text-[#58e6fc] w-8 h-8" />
-            </div>
-            <h2 className="text-3xl font-extrabold mb-6">Our Values</h2>
-            <div className="space-y-6">
-              {[
-                {
-                  icon: <Heart />,
-                  t: "Compassion",
-                  d: "We treat every patient like family.",
-                },
-                {
-                  icon: <Zap />,
-                  t: "Innovation",
-                  d: "Pushing the boundaries of Med-Tech.",
-                },
-                {
-                  icon: <Smile />,
-                  t: "Trust",
-                  d: "Integrity in every diagnosis.",
-                },
-              ].map((v, i) => (
-                <div key={i} className="flex gap-4 items-start">
-                  <div className="mt-1 text-[#58e6fc]">{v.icon}</div>
-                  <div>
-                    <h4 className="font-bold text-xl">{v.t}</h4>
-                    <p className="text-[#c4f7ff] opacity-80">{v.d}</p>
-                  </div>
+      {/* 📖 Our Story Section */}
+      <section className="py-20 relative">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="lg:w-1/2 relative"
+            >
+              <div className="absolute -inset-4 bg-gradient-to-tr from-[#2dd4bf]/20 to-[#0a7a8c]/20 rounded-[3rem] blur-xl transform -rotate-3"></div>
+              <img
+                src={bg}
+                alt="MidLink Healthcare"
+                className="relative rounded-[2.5rem] shadow-2xl border-4 border-white w-full object-cover z-10"
+              />
+              <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-3xl shadow-xl border border-slate-100 z-20 flex items-center gap-4">
+                <div className="bg-[#e6f0f5] p-4 rounded-2xl">
+                  <Activity className="text-[#0a7a8c] w-8 h-8" />
                 </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+                <div>
+                  <p className="text-2xl font-black text-[#04333a]">100%</p>
+                  <p className="text-sm font-bold text-slate-500">
+                    Secure Records
+                  </p>
+                </div>
+              </div>
+            </motion.div>
 
-        {/* 🌟 The "Why Choose Us" Grid */}
-        <section className="text-center mb-24">
-          <h3 className="text-4xl font-extrabold text-[#04333a] mb-4">
-            Why Choose MidLink?
-          </h3>
-          <p className="text-gray-500 text-lg mb-12 font-serif">
-            A comprehensive suite of medical tools designed for you.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((f, i) => (
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="lg:w-1/2"
+            >
+              <span className="text-[#0a7a8c] font-bold tracking-widest uppercase text-sm mb-3 block">
+                Our Evolution
+              </span>
+              <h2 className="text-3xl md:text-4xl font-black text-[#04333a] mb-6 font-serif">
+                From a Simple Idea to a <br />
+                <span className="text-[#0a7a8c]">Hybrid Ecosystem</span>
+              </h2>
+              <div className="space-y-4 text-slate-600 font-medium leading-relaxed">
+                <p>
+                  MidLink started with a vision to eliminate the friction in
+                  healthcare access. We noticed that patients were either stuck
+                  waiting in crowded clinics or limited to basic video calls
+                  that lacked physical follow-ups.
+                </p>
+                <p>
+                  That's why we built a <strong>Hybrid Model</strong>. Today,
+                  MidLink empowers patients to use our AI Triage to find the
+                  right specialty, and then gives them the freedom to choose:
+                  consult a top doctor instantly via a secure Video Call, or
+                  book an In-Clinic visit and let our Google Maps integration
+                  guide them to the door.
+                </p>
+              </div>
+
+              <div className="mt-8 grid grid-cols-2 gap-6">
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                  <Target className="text-[#2dd4bf] w-8 h-8 mb-3" />
+                  <h4 className="font-bold text-[#04333a] mb-1">Our Mission</h4>
+                  <p className="text-sm text-slate-500">
+                    To make quality healthcare accessible, organized, and
+                    boundaryless.
+                  </p>
+                </div>
+                <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                  <Users className="text-[#0a7a8c] w-8 h-8 mb-3" />
+                  <h4 className="font-bold text-[#04333a] mb-1">Our Vision</h4>
+                  <p className="text-sm text-slate-500">
+                    To be the unified digital bridge for medical services in
+                    Jordan.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* 🎯 Core Features Grid */}
+      <section className="py-20 bg-white relative">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-black text-[#04333a] font-serif mb-4">
+              The MidLink Advantage
+            </h2>
+            <p className="text-slate-500 font-medium max-w-2xl mx-auto">
+              We leverage cutting-edge technology to provide a secure, seamless,
+              and comprehensive healthcare experience.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
               <motion.div
-                key={i}
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ scale: 1.05, backgroundColor: "#fdfdfd" }}
-                className="bg-white p-8 rounded-3xl shadow-lg border border-gray-50 text-center"
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-[#f8fafc] border border-slate-100 p-8 rounded-[2rem] hover:shadow-xl hover:border-[#2dd4bf]/30 transition-all duration-300 group"
               >
-                <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-                  {f.icon}
+                <div className="bg-white w-16 h-16 rounded-2xl shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon}
                 </div>
-                <h4 className="text-xl font-extrabold text-[#04333a] mb-3">
-                  {f.title}
-                </h4>
-                <p className="text-gray-500 text-sm leading-relaxed">
-                  {f.desc}
+                <h3 className="text-xl font-bold text-[#04333a] mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-500 text-sm leading-relaxed font-medium">
+                  {feature.desc}
                 </p>
               </motion.div>
             ))}
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
+
+      {/* 💡 Concluding Statement Card (بدون أي أزرار) */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <div className="bg-gradient-to-br from-[#0f4c5c] to-[#04333a] rounded-[3rem] p-12 text-center relative overflow-hidden shadow-2xl border border-teal-900/50">
+            {/* الخلفية المزخرفة */}
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none"></div>
+            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-[#2dd4bf] opacity-20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="relative z-10"
+            >
+              <HeartPulse className="w-16 h-16 text-[#2dd4bf] mx-auto mb-6 drop-shadow-[0_0_15px_rgba(45,212,191,0.5)]" />
+              <h2 className="text-3xl md:text-4xl font-black text-white mb-8 font-serif tracking-wide">
+                The Future of Healthcare is Here
+              </h2>
+
+              {/* صندوق النص الاحترافي كبديل للزر */}
+              <div className="max-w-3xl mx-auto bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 shadow-inner">
+                <p className="text-blue-50 text-lg leading-relaxed font-medium">
+                  MidLink stands as a testament to innovation in the Jordanian
+                  medical sector. By seamlessly intertwining physical clinics
+                  with advanced telemedicine, we are setting a new standard for
+                  accessibility, security, and patient-centric care.
+                </p>
+
+                <div className="mt-8 pt-6 border-t border-white/10 flex justify-center items-center gap-6 text-[#2dd4bf] font-bold text-sm uppercase tracking-widest">
+                  <span>Secure</span>
+                  <span className="w-1.5 h-1.5 bg-[#58e6fc] rounded-full"></span>
+                  <span>Hybrid</span>
+                  <span className="w-1.5 h-1.5 bg-[#58e6fc] rounded-full"></span>
+                  <span>Reliable</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );
 };
 
 export default AboutPage;
-
-/*
-// import React from 'react'; 
-import { Heart, Zap, Smile, Users } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import bg from '../assets/Untitled design.png'
-const AboutPage = () => {
-  return (
-    <><Navbar/>
-    <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen">
-      
-      <section
-        className="bg-cover bg-center text-white py-48"
-        style={{
-          backgroundImage: `url(${bg})`,
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          // backgroundPosition: 'center',
-        }}
-      >
-        <div className="container mx-auto text-center bg-[#a19a9a] bg-opacity-50 p-6 rounded-lg">
-          <h2 className="text-4xl font-bold mb-4">About Our Hospital</h2>
-          <p className="text-xl">Providing Exceptional Care with Cutting-Edge Technology</p>
-        </div>
-      </section>
-
-      <main className="container mx-auto mt-8 p-4">  
-        <div className="grid md:grid-cols-2 gap-8">  
-          <div className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition duration-300">
-            <h2 className="text-3xl font-semibold text-#04333a mb-6">Our Mission</h2>
-            <p className="text-gray-700 mb-4">
-              At our Hospital Management System, we are dedicated to revolutionizing healthcare delivery through innovative technology and compassionate care. Our mission is to empower healthcare providers with state-of-the-art tools that enhance patient care, streamline operations, and improve overall health outcomes.
-            </p>
-            <p className="text-gray-700 mb-4">
-              We believe in a future where technology and human expertise work hand in hand to provide the best possible care for every patient. Our system is designed to support medical professionals in their daily tasks, allowing them to focus more on what truly matters - the well-being of their patients.
-            </p>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition duration-300">
-            <h3 className="text-2xl font-semibold text-#04333a mb-6">Our Values</h3>
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <Heart className="h-8 w-8 text-red-500 mr-3" />
-                <div>
-                  <h4 className="font-semibold text-lg">Compassion</h4>
-                  <p className="text-gray-600">We put heart into everything we do</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <Zap className="h-8 w-8 text-yellow-500 mr-3" />
-                <div>
-                  <h4 className="font-semibold text-lg">Innovation</h4>
-                  <p className="text-gray-600">Constantly improving and evolving</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <Smile className="h-8 w-8 text-green-500 mr-3" />
-                <div>
-                  <h4 className="font-semibold text-lg">Patient-Centric</h4>
-                  <p className="text-gray-600">Your health and happiness is our priority</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <Users className="h-8 w-8 text-blue-500 mr-3" />
-                <div>
-                  <h4 className="font-semibold text-lg">Collaboration</h4>
-                  <p className="text-gray-600">Working together for better healthcare</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <section className="mt-12 bg-[#e6f0f5] rounded-lg p-8 shadow-inner">
-          <h3 className="text-2xl font-semibold text-#04333a mb-4">Our Commitment to Excellence</h3>
-          <p className="text-gray-700 mb-4">
-            We are committed to maintaining the highest standards of quality and safety in healthcare management. Our system undergoes rigorous testing and continuous improvement to ensure it meets the evolving needs of healthcare providers and patients alike.
-          </p>
-          <p className="text-gray-700">
-            By choosing our Hospital Management System, you're not just getting a software solution - you're partnering with a team dedicated to transforming healthcare for the better.
-          </p>
-        </section>
-      </main>
-    </div>
-    <Footer/>
-    </>
-  );
-};
-
-export default AboutPage;   */
-
-// **************************************************************************************************  //

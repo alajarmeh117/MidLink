@@ -6,8 +6,9 @@ const DEFAULT_PROFILE_IMAGE = "uploads/default-doctor.png";
 exports.getDoctorProfile = async (req, res) => {
   try {
     const staffId = req.user.staff_id;
+    // 🔥 التعديل: ضفنا clinic_address
     const query =
-      "SELECT staff_id, staff_name, email, specialty, bio, profile_image, cv FROM medical_staff WHERE staff_id = $1";
+      "SELECT staff_id, staff_name, email, specialty, bio, profile_image, cv, clinic_address FROM medical_staff WHERE staff_id = $1";
     const result = await db.query(query, [staffId]);
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "Doctor not found" });
@@ -24,21 +25,29 @@ exports.getDoctorProfile = async (req, res) => {
 exports.updateDoctorProfile = async (req, res) => {
   try {
     const doctorId = req.user.staff_id;
-    const { staff_name, email, password, specialty, bio } = req.body;
+    // 🔥 التعديل 1: استلام clinic_address من واجهة تعديل البروفايل
+    const { staff_name, email, password, specialty, bio, clinic_address } =
+      req.body;
+
+    // 🔥 التعديل 2: إضافته لجملة الـ UPDATE
     let query =
-      "UPDATE medical_staff SET staff_name = $1, email = $2, specialty = $3, bio = $4";
-    let values = [staff_name, email, specialty, bio];
+      "UPDATE medical_staff SET staff_name = $1, email = $2, specialty = $3, bio = $4, clinic_address = $5";
+    let values = [staff_name, email, specialty, bio, clinic_address];
+
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
-      query += ", password = $5";
+      query += ", password = $6";
       values.push(hashedPassword);
     }
+
     query +=
       " WHERE staff_id = $" +
       (values.length + 1) +
-      " RETURNING staff_id, staff_name, email, specialty, bio, profile_image, cv";
+      " RETURNING staff_id, staff_name, email, specialty, bio, profile_image, cv, clinic_address";
+
     values.push(doctorId);
     const result = await db.query(query, values);
+
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "Doctor not found" });
     }

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_BASE_URL = "https://midlink-of4r.onrender.com/api/doctors";
+const API_BASE_URL = "http://localhost:5000/api/doctors";
 
 export const getDoctorProfile = createAsyncThunk(
   "doctor/getDoctorProfile",

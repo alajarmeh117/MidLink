@@ -35,8 +35,7 @@ const adminLogin = async (req, res) => {
     // Set token in cookie
     res.cookie("AdminToken", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: process.env.NODE_ENV === "production",
       maxAge: 3600000, // 1 hour
     });
 
