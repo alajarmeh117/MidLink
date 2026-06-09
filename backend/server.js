@@ -50,10 +50,14 @@ io.on("connection", (socket) => {
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://mid-link-4b4q.vercel.app", // الرابط الجديد تبع Vercel (تأكد إنه بدون شرطة مايلة / بالآخر)
+    ],
     credentials: true,
   }),
 );
+
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 

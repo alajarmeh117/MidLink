@@ -184,7 +184,7 @@ exports.forgotPassword = async (req, res) => {
     const token = jwt.sign(payload, secret, { expiresIn: "15m" });
 
     // 5. إنشاء رابط الترجيع وإرساله
-    const link = `http://localhost:5173/reset-password/${userId}/${token}`;
+    const link = `https://mid-link-4b4q.vercel.app/reset-password/${userId}/${token}`;
 
     const mailOptions = {
       from: "midlink81@gmail.com",
