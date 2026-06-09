@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar from "../AdminPages/sidebar";
-import Cards from "./cards";
+import Cards from "./Cards";
 
 const AdminHome = () => {
   return (
